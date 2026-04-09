@@ -24,4 +24,5 @@ npm run dev
 - Phase 2: `docs/phase-2-schema.md`
 - Phase 3: `docs/phase-3-auth-rls-security.md`
 - Phase 4: `docs/phase-4-domain-repositories-services.md`
+- Phase 5: `docs/phase-5-apis-server-actions.md`
 - Détails des couches applicatives: `src/README.md`
