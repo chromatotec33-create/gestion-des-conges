@@ -26,4 +26,5 @@ npm run dev
 - Phase 4: `docs/phase-4-domain-repositories-services.md`
 - Phase 5: `docs/phase-5-apis-server-actions.md`
 - Phase 6: `docs/phase-6-ui-dashboard.md`
+- Phase 7: `docs/phase-7-tests.md`
 - Détails des couches applicatives: `src/README.md`
