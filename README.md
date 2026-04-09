@@ -20,4 +20,6 @@ npm run dev
 
 ## Architecture
 
-Voir `docs/phase-1-architecture.md` et `src/README.md`.
+- Phase 1: `docs/phase-1-architecture.md`
+- Phase 2: `docs/phase-2-schema.md`
+- Détails des couches applicatives: `src/README.md`
