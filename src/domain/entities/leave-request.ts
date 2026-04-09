@@ -50,10 +50,17 @@ export class LeaveRequest {
     });
   }
 
-  canBeCancelledByEmployer(now: Date): { allowed: boolean; warningLessThan30Days: boolean } {
-    const firstDate = this.props.days
-      .map((d) => d.leaveDate)
-      .sort((a, b) => a.getTime() - b.getTime())[0];
+  canBeCancelledByEmployer(now: Date): { allowed: boolean; warningLessThan30Days: boolean; reason?: string } {
+    const sortedDates = this.props.days.map((d) => d.leaveDate).sort((a, b) => a.getTime() - b.getTime());
+    const firstDate = sortedDates[0];
+
+    if (!firstDate) {
+      return {
+        allowed: false,
+        warningLessThan30Days: false,
+        reason: "Aucune date de congé trouvée"
+      };
+    }
 
     const daysUntilStart = Math.ceil((firstDate.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
 
