@@ -1,0 +1,25 @@
+# Gestion des congés — SaaS RH enterprise
+
+Base technique initiale du produit de gestion des congés conforme aux exigences enterprise (Phase 1).
+
+## Démarrage
+
+```bash
+npm install
+npm run dev
+```
+
+## Scripts
+
+- `npm run dev` : développement local.
+- `npm run build` : build production.
+- `npm run lint` : linting.
+- `npm run typecheck` : vérification TypeScript.
+- `npm run test` : tests unitaires (Vitest).
+- `npm run test:e2e` : tests end-to-end (Playwright).
+
+## Architecture
+
+- Phase 1: `docs/phase-1-architecture.md`
+- Phase 2: `docs/phase-2-schema.md`
+- Détails des couches applicatives: `src/README.md`
