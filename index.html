@@ -2,22 +2,59 @@
 <html lang="fr">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self'; script-src 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'none';" />
-    <title>Gestion des congés — Portail RH</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' https://esm.sh https://*.supabase.co; connect-src 'self' https://*.supabase.co; style-src 'self'; script-src 'self' https://esm.sh; object-src 'none'; base-uri 'self'; frame-ancestors 'none';" />
+    <title>Portail Congés</title>
     <link rel="stylesheet" href="./styles.css" />
   </head>
   <body>
-    <header class="public-header" data-public-header></header>
-    <main class="landing container">
-      <h1>Gestion des congés entreprise</h1>
-      <p class="lead">Version HTML fidèle au portail initial : dashboard RH, connexion sécurisée, demande et suivi.</p>
-      <section class="grid-cards">
-        <article class="panel"><h2>Dashboard RH</h2><p>KPI, demandes en attente, conformité.</p></article>
-        <article class="panel"><h2>Validation manager</h2><p>Pipeline des demandes pending / approved / rejected.</p></article>
-        <article class="panel"><h2>Suivi collaborateur</h2><p>Historique personnel avec statut détaillé.</p></article>
-      </section>
-    </main>
-    <script type="module" src="./index-page.js"></script>
+    <div class="app-shell">
+      <aside class="sidebar">
+        <h1>Portail Congés</h1>
+        <p id="user-label" class="muted">Non connecté</p>
+        <nav>
+          <button class="nav-btn active" data-view="dashboard">Dashboard</button>
+          <button class="nav-btn" data-view="demande">Nouvelle demande</button>
+          <button class="nav-btn" data-view="validation">Validation services</button>
+          <button class="nav-btn" data-view="config">Configuration Supabase</button>
+        </nav>
+      </aside>
+
+      <main class="content">
+        <header class="topbar">
+          <h2 id="page-title">Dashboard</h2>
+          <div class="top-actions">
+            <button id="logout-btn" class="secondary">Déconnexion</button>
+          </div>
+        </header>
+
+        <section id="auth-card" class="card">
+          <h3>Connexion</h3>
+          <form id="login-form">
+            <div class="grid-2">
+              <label>Email<input name="email" type="email" required /></label>
+              <label>Mot de passe<input name="password" type="password" required /></label>
+            </div>
+            <div class="actions"><button type="submit">Se connecter</button><span id="login-status" class="muted"></span></div>
+          </form>
+        </section>
+
+        <section id="dashboard-view" class="card hidden"></section>
+        <section id="demande-view" class="card hidden"></section>
+        <section id="validation-view" class="card hidden"></section>
+
+        <section id="config-view" class="card hidden">
+          <h3>Configuration Supabase</h3>
+          <p class="muted">Ces valeurs sont stockées localement dans votre navigateur.</p>
+          <form id="config-form">
+            <label>URL Supabase<input name="url" placeholder="https://xxx.supabase.co" required /></label>
+            <label>Anon key<input name="anonKey" required /></label>
+            <div class="actions"><button type="submit">Enregistrer</button><span id="config-status" class="muted"></span></div>
+          </form>
+        </section>
+      </main>
+    </div>
+
+    <script type="module" src="./app.js"></script>
   </body>
 </html>

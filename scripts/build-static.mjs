@@ -2,18 +2,16 @@ import { cpSync, existsSync, mkdirSync, readdirSync, rmSync, statSync } from 'no
 import { join } from 'node:path';
 
 const root = process.cwd();
-const outDir = join(root, 'dist');
-const allowedExtensions = new Set(['.html', '.css', '.js']);
+const out = join(root, 'dist');
+const allowed = new Set(['.html', '.css', '.js']);
 
-if (existsSync(outDir)) rmSync(outDir, { recursive: true, force: true });
-mkdirSync(outDir, { recursive: true });
-
+if (existsSync(out)) rmSync(out, { recursive: true, force: true });
+mkdirSync(out, { recursive: true });
 for (const file of readdirSync(root)) {
-  const source = join(root, file);
-  if (statSync(source).isDirectory()) continue;
-  const extension = `.${file.split('.').pop()}`;
-  if (!allowedExtensions.has(extension)) continue;
-  cpSync(source, join(outDir, file));
+  const src = join(root, file);
+  if (statSync(src).isDirectory()) continue;
+  const ext = `.${file.split('.').pop()}`;
+  if (!allowed.has(ext)) continue;
+  cpSync(src, join(out, file));
 }
-
-console.log('Build statique terminé dans /dist');
+console.log('dist prêt');
