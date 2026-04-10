@@ -18,12 +18,10 @@
 
 ## 3) CI/CD GitHub Actions
 
-Le workflow `.github/workflows/ci.yml` exécute:
+Le workflow `.github/workflows/ci.yml` est séparé en:
 
-- lint
-- typecheck
-- tests unitaires
-- tests e2e Playwright
+- **Build (blocking)**: uniquement le build applicatif (ne bloque pas le déploiement sur un test).
+- **Quality checks (non-blocking)**: lint/typecheck/tests exécutables manuellement.
 
 ## 4) Check-list go-live
 

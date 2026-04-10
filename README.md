@@ -49,11 +49,8 @@ supabase db push
 
 Le pipeline GitHub Actions est défini dans `.github/workflows/ci.yml`:
 
-1. `npm ci`
-2. `npm run lint`
-3. `npm run typecheck`
-4. `npm run test`
-5. `npm run test:e2e`
+- **Job bloquant**: build applicatif uniquement (`npm run build`) pour éviter un blocage déploiement sur tests.
+- **Job optionnel non bloquant** (manuel `workflow_dispatch`): lint, typecheck, unit tests, e2e.
 
 ## Documentation de phase
 

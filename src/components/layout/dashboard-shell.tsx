@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { Button } from "@/components/ui/button";
+import { LogoutButton } from "@/features/auth/components/logout-button";
 
 type DashboardShellProps = {
   readonly children: ReactNode;
@@ -23,6 +24,7 @@ export function DashboardShell({ children }: DashboardShellProps) {
               <Button variant="ghost">Calendrier</Button>
             </Link>
             <Button>Nouvelle demande</Button>
+            <LogoutButton />
           </nav>
         </div>
       </header>

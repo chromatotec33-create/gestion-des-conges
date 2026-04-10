@@ -9,8 +9,8 @@ export default function HomePage() {
         Fondation Phase 1 prête : architecture modulaire enterprise alignée DDD/Clean.
       </p>
       <div className="mt-6">
-        <Link href="/dashboard">
-          <Button>Accéder au dashboard</Button>
+        <Link href="/login">
+          <Button>Se connecter</Button>
         </Link>
       </div>
     </main>
