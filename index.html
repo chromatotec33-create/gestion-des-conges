@@ -12,11 +12,11 @@
       <aside class="sidebar">
         <h1>Portail Congés</h1>
         <p id="user-label" class="muted">Non connecté</p>
+        <p id="env-label" class="muted">Env: non chargé</p>
         <nav>
           <button class="nav-btn active" data-view="dashboard">Dashboard</button>
           <button class="nav-btn" data-view="demande">Nouvelle demande</button>
           <button class="nav-btn" data-view="validation">Validation services</button>
-          <button class="nav-btn" data-view="config">Configuration Supabase</button>
         </nav>
       </aside>
 
@@ -30,6 +30,7 @@
 
         <section id="auth-card" class="card">
           <h3>Connexion</h3>
+          <p class="muted">La configuration Supabase vient des variables d'environnement Vercel.</p>
           <form id="login-form">
             <div class="grid-2">
               <label>Email<input name="email" type="email" required /></label>
@@ -42,19 +43,10 @@
         <section id="dashboard-view" class="card hidden"></section>
         <section id="demande-view" class="card hidden"></section>
         <section id="validation-view" class="card hidden"></section>
-
-        <section id="config-view" class="card hidden">
-          <h3>Configuration Supabase</h3>
-          <p class="muted">Ces valeurs sont stockées localement dans votre navigateur.</p>
-          <form id="config-form">
-            <label>URL Supabase<input name="url" placeholder="https://xxx.supabase.co" required /></label>
-            <label>Anon key<input name="anonKey" required /></label>
-            <div class="actions"><button type="submit">Enregistrer</button><span id="config-status" class="muted"></span></div>
-          </form>
-        </section>
       </main>
     </div>
 
+    <script src="./env.js"></script>
     <script type="module" src="./app.js"></script>
   </body>
 </html>

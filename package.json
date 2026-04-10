@@ -4,9 +4,9 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "node scripts/dev-server.mjs",
-    "build": "node scripts/build-static.mjs",
+    "dev": "node scripts/generate-env.mjs && node scripts/dev-server.mjs",
+    "build": "node scripts/generate-env.mjs && node scripts/build-static.mjs",
     "start": "node scripts/dev-server.mjs",
-    "test": "node --check app.js && node --check scripts/dev-server.mjs && node --check scripts/build-static.mjs"
+    "test": "node --check app.js && node --check scripts/generate-env.mjs && node --check scripts/dev-server.mjs && node --check scripts/build-static.mjs"
   }
 }

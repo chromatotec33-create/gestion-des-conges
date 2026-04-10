@@ -1,6 +1,17 @@
-# Portail Congés (HTML + Supabase)
+# Portail Congés (HTML + Supabase + Vercel)
 
 Application moderne en **HTML/CSS/JS** connectée à **Supabase**.
+
+## Variables d'environnement Vercel
+
+Configurer dans Vercel (Project → Environment Variables):
+
+- `APP_BASE_URL`
+- `NEXT_PUBLIC_SUPABASE_URL`
+- `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+- `SUPABASE_SERVICE_ROLE_KEY` (stockée côté plateforme, **jamais exposée au client**)
+
+Le build génère automatiquement `env.js` à partir des variables `APP_BASE_URL`, `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`.
 
 ## Fonctionnalités
 
@@ -12,30 +23,25 @@ Application moderne en **HTML/CSS/JS** connectée à **Supabase**.
 - Validation multi-services : chef_service puis direction
 - Historisation des validations/refus (`historiques`)
 
-## Configuration
-
-1. Ouvrir l'onglet **Configuration Supabase** dans l'app.
-2. Saisir:
-   - URL Supabase
-   - Anon Key
-3. Se connecter avec un utilisateur existant dans `auth.users` + `profiles`.
-
 ## Schéma SQL Supabase
 
-Utiliser la migration:
+Migration à appliquer:
 
 - `supabase/migrations/20260410180000_full_leave_management.sql`
 
 ## Lancement local
 
 ```bash
+APP_BASE_URL=http://localhost:3000 \
+NEXT_PUBLIC_SUPABASE_URL=https://xxx.supabase.co \
+NEXT_PUBLIC_SUPABASE_ANON_KEY=xxx \
 npm run dev
 ```
 
-## Build déployable
+## Build + déploiement Vercel
 
 ```bash
 npm run build
 ```
 
-Le dossier `dist/` est prêt pour Vercel (Static).
+Le dossier `dist/` est publié (cf. `vercel.json`).
