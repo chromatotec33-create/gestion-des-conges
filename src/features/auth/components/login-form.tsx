@@ -5,6 +5,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useRouter } from "next/navigation";
+import { LockKeyhole, Mail } from "lucide-react";
 import { getBrowserSupabaseClient } from "@/infrastructure/supabase/browser-client";
 import { Button } from "@/components/ui/button";
 import { Card, CardTitle } from "@/components/ui/card";
@@ -48,29 +49,25 @@ export function LoginForm() {
 
   return (
     <Card className="mx-auto w-full max-w-md">
-      <CardTitle>Connexion</CardTitle>
-      <p className="mt-2 text-sm text-slate-500">Accédez à votre espace de gestion des congés.</p>
+      <CardTitle>Bienvenue</CardTitle>
+      <p className="mt-2 text-sm text-muted-foreground">Accédez à votre espace de gestion des congés.</p>
 
-      <form className="mt-4 space-y-4" onSubmit={onSubmit}>
+      <form className="mt-5 space-y-4" onSubmit={onSubmit}>
         <div>
           <label className="mb-1 block text-sm font-medium">Email</label>
-          <input
-            type="email"
-            className="w-full rounded-md border border-border px-3 py-2 text-sm"
-            {...form.register("email")}
-          />
-          {form.formState.errors.email ? (
-            <p className="mt-1 text-xs text-red-600">{form.formState.errors.email.message}</p>
-          ) : null}
+          <div className="flex items-center gap-2 rounded-xl border border-border/70 bg-background px-3 py-2">
+            <Mail className="h-4 w-4 text-muted-foreground" />
+            <input type="email" className="w-full bg-transparent text-sm outline-none" {...form.register("email")} />
+          </div>
+          {form.formState.errors.email ? <p className="mt-1 text-xs text-red-600">{form.formState.errors.email.message}</p> : null}
         </div>
 
         <div>
           <label className="mb-1 block text-sm font-medium">Mot de passe</label>
-          <input
-            type="password"
-            className="w-full rounded-md border border-border px-3 py-2 text-sm"
-            {...form.register("password")}
-          />
+          <div className="flex items-center gap-2 rounded-xl border border-border/70 bg-background px-3 py-2">
+            <LockKeyhole className="h-4 w-4 text-muted-foreground" />
+            <input type="password" className="w-full bg-transparent text-sm outline-none" {...form.register("password")} />
+          </div>
           {form.formState.errors.password ? (
             <p className="mt-1 text-xs text-red-600">{form.formState.errors.password.message}</p>
           ) : null}

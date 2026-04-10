@@ -3,40 +3,37 @@
 import { DomainError } from "@/domain/errors/domain-error";
 import { createLeaveServices } from "@/features/leave/service-factory";
 import { createServiceRoleClient } from "@/infrastructure/supabase/server-client";
+import { resolveDefaultCompanyId } from "@/lib/default-company";
 import { cancelLeaveRequestSchema, createLeaveRequestSchema } from "@/validators/leave-request.validator";
 
-async function findEmployeeId(companyId: string, userId: string): Promise<string | null> {
+async function findEmployeeId(userId: string): Promise<{ companyId: string; employeeId: string } | null> {
   const supabase = createServiceRoleClient();
-  const { data, error } = await supabase
-    .from("employees")
-    .select("id")
-    .eq("company_id", companyId)
-    .eq("user_id", userId)
-    .maybeSingle<{ id: string }>();
+  const companyId = await resolveDefaultCompanyId();
+
+  const { data, error } = await supabase.from("employees").select("id").eq("company_id", companyId).eq("user_id", userId).maybeSingle<{ id: string }>();
 
   if (error) {
     throw new DomainError("Unable to resolve employee", "ACTION_EMPLOYEE_RESOLUTION_FAILED", { cause: error.message });
   }
 
-  return data?.id ?? null;
+  return data?.id ? { companyId, employeeId: data.id } : null;
 }
 
 export async function submitLeaveRequestAction(input: {
-  readonly companyId: string;
   readonly leaveTypeId: string;
   readonly reason?: string;
   readonly days: Array<{ leaveDate: string; dayPart: "FULL_DAY" | "AM" | "PM"; durationDays: number }>;
   readonly userId: string;
 }) {
-  const employeeId = await findEmployeeId(input.companyId, input.userId);
+  const employee = await findEmployeeId(input.userId);
 
-  if (!employeeId) {
-    throw new DomainError("No employee linked to the authenticated user for this company", "ACTION_EMPLOYEE_NOT_FOUND");
+  if (!employee) {
+    throw new DomainError("No employee linked to the authenticated user", "ACTION_EMPLOYEE_NOT_FOUND");
   }
 
   const payload = createLeaveRequestSchema.parse({
-    companyId: input.companyId,
-    employeeId,
+    companyId: employee.companyId,
+    employeeId: employee.employeeId,
     leaveTypeId: input.leaveTypeId,
     reason: input.reason,
     days: input.days,
@@ -44,12 +41,10 @@ export async function submitLeaveRequestAction(input: {
   });
 
   const { submitLeaveRequestService } = createLeaveServices();
-
   return submitLeaveRequestService.execute(payload);
 }
 
 export async function cancelLeaveRequestAction(input: {
-  readonly companyId: string;
   readonly leaveRequestId: string;
   readonly reason: string;
   readonly restoreDays: boolean;
@@ -57,8 +52,14 @@ export async function cancelLeaveRequestAction(input: {
   readonly userId: string;
   readonly reinforcedJustification?: string;
 }) {
+  const employee = await findEmployeeId(input.userId);
+
+  if (!employee) {
+    throw new DomainError("No employee linked to the authenticated user", "ACTION_EMPLOYEE_NOT_FOUND");
+  }
+
   const payload = cancelLeaveRequestSchema.parse({
-    companyId: input.companyId,
+    companyId: employee.companyId,
     leaveRequestId: input.leaveRequestId,
     initiatedByUserId: input.userId,
     initiatedByRole: input.initiatedByRole,
