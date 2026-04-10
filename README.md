@@ -2,7 +2,7 @@
 
 Application complète de gestion des congés prête pour un déploiement Vercel.
 
-## Stack
+## Écrans disponibles
 
 - Frontend: Next.js (App Router), TypeScript, Tailwind
 - Backend: Supabase (PostgreSQL, Auth, RLS)
