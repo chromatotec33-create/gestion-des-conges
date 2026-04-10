@@ -1,0 +1,54 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: 222 33% 98%;
+  --foreground: 225 22% 14%;
+  --muted: 218 22% 94%;
+  --muted-foreground: 217 10% 46%;
+  --card: 0 0% 100%;
+  --card-foreground: 225 22% 14%;
+  --border: 217 24% 88%;
+  --primary: 223 84% 56%;
+  --primary-foreground: 210 40% 98%;
+  --radius: 0.85rem;
+
+  --chromatotec: 217 91% 60%;
+  --airmotec: 174 84% 34%;
+  --jpa: 13 88% 57%;
+}
+
+.dark {
+  --background: 226 38% 8%;
+  --foreground: 210 20% 96%;
+  --muted: 225 29% 14%;
+  --muted-foreground: 215 12% 66%;
+  --card: 226 35% 11%;
+  --card-foreground: 210 20% 96%;
+  --border: 225 22% 20%;
+  --primary: 222 89% 67%;
+  --primary-foreground: 222 47% 11%;
+}
+
+* {
+  @apply border-border;
+}
+
+body {
+  @apply bg-background text-foreground antialiased;
+}
+
+@layer components {
+  .page-title {
+    @apply text-2xl font-semibold tracking-tight;
+  }
+
+  .page-subtitle {
+    @apply mt-1 text-sm text-muted-foreground;
+  }
+
+  .enterprise-panel {
+    @apply rounded-2xl border bg-card p-5 shadow-sm;
+  }
+}
