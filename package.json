@@ -4,12 +4,13 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "node scripts/dev-server.mjs",
-    "build": "node scripts/build-static.mjs",
-    "start": "node scripts/dev-server.mjs",
-    "lint": "echo \"No linter configured for static HTML/JS\"",
-    "typecheck": "echo \"No TypeScript in static version\"",
-    "test": "node --check app.js && node --check index-page.js && node --check connexion-page.js && node --check dashboard-page.js && node --check demande-page.js && node --check suivi-page.js && node --check approvals-page.js && node --check scripts/dev-server.mjs && node --check scripts/build-static.mjs"
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:e2e": "playwright test"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",
