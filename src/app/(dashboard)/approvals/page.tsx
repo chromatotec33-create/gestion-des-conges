@@ -1,57 +1,119 @@
-"use client";
-
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
 import { Card, CardTitle } from "@/components/ui/card";
+import { createServiceRoleClient } from "@/infrastructure/supabase/server-client";
 
-type ApprovalRow = {
-  readonly employee: string;
-  readonly type: string;
-  readonly dates: string;
+type ApprovalSearchParams = {
+  companyId?: string;
 };
 
-const initialApprovals: ApprovalRow[] = [
-  { employee: "Nadia Lemaitre", type: "CP N", dates: "18/04 - 22/04" },
-  { employee: "Thomas Rey", type: "RTT", dates: "25/04" }
-];
+type PendingApprovalRow = {
+  id: string;
+  leave_type_id: string;
+  status: string;
+  employees: {
+    first_name: string | null;
+    last_name: string | null;
+  } | null;
+  leave_request_days: Array<{
+    leave_date: string;
+  }>;
+};
 
-export default function ApprovalsPage() {
-  const [approvals, setApprovals] = useState<ApprovalRow[]>(initialApprovals);
-  const [feedback, setFeedback] = useState<string | null>(null);
+function periodFromDays(days: Array<{ leave_date: string }>): string {
+  if (!days.length) {
+    return "-";
+  }
 
-  const decide = (employee: string, decision: "approuvée" | "refusée") => {
-    setApprovals((prev) => prev.filter((approval) => approval.employee !== employee));
-    setFeedback(`Demande ${decision} pour ${employee}.`);
-  };
+  const sorted = [...days].sort((a, b) => a.leave_date.localeCompare(b.leave_date));
+  const start = sorted[0]?.leave_date ?? "";
+  const end = sorted[sorted.length - 1]?.leave_date ?? "";
+
+  if (!start) {
+    return "-";
+  }
+
+  return start === end ? start : `${start} -> ${end}`;
+}
+
+function employeeLabel(employee: PendingApprovalRow["employees"]): string {
+  const first = employee?.first_name ?? "";
+  const last = employee?.last_name ?? "";
+  const full = `${first} ${last}`.trim();
+  return full || "Employé inconnu";
+}
+
+async function fetchPendingApprovals(companyId: string): Promise<PendingApprovalRow[]> {
+  const supabase = createServiceRoleClient();
+
+  const { data, error } = await supabase
+    .from("leave_requests")
+    .select(
+      "id, leave_type_id, status, employees(first_name, last_name), leave_request_days(leave_date)"
+    )
+    .eq("company_id", companyId)
+    .eq("status", "pending")
+    .order("created_at", { ascending: true })
+    .limit(50)
+    .returns<PendingApprovalRow[]>();
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  return data ?? [];
+}
+
+export default async function ApprovalsPage({ searchParams }: { searchParams: ApprovalSearchParams }) {
+  const companyId = searchParams.companyId;
+  let approvals: PendingApprovalRow[] = [];
+  let errorMessage: string | null = null;
+
+  if (companyId) {
+    try {
+      approvals = await fetchPendingApprovals(companyId);
+    } catch (error) {
+      errorMessage = error instanceof Error ? error.message : "Erreur de chargement";
+    }
+  }
 
   return (
     <section className="space-y-6">
       <div>
         <h2 className="page-title">Validation manager</h2>
-        <p className="page-subtitle">Pipeline d’approbation des demandes en attente.</p>
+        <p className="page-subtitle">Pipeline d’approbation des demandes en attente (données Supabase).</p>
       </div>
 
-      {feedback ? <p className="rounded-md border bg-muted/30 px-3 py-2 text-sm">{feedback}</p> : null}
+      {!companyId ? (
+        <Card>
+          <p className="text-sm text-muted-foreground">
+            Renseignez <code>companyId</code> dans l’URL pour charger les demandes en attente réelles.
+          </p>
+        </Card>
+      ) : null}
+
+      {errorMessage ? (
+        <Card>
+          <p className="text-sm text-red-600">Erreur: {errorMessage}</p>
+        </Card>
+      ) : null}
 
       <div className="grid gap-4">
         {approvals.map((approval) => (
-          <Card key={`${approval.employee}-${approval.dates}`}>
-            <div className="flex flex-wrap items-center justify-between gap-3">
-              <div>
-                <CardTitle>{approval.employee}</CardTitle>
-                <p className="mt-1 text-sm text-muted-foreground">
-                  {approval.type} — {approval.dates}
-                </p>
-              </div>
-              <div className="flex gap-2">
-                <Button variant="outline" onClick={() => decide(approval.employee, "refusée")}>
-                  Refuser
-                </Button>
-                <Button onClick={() => decide(approval.employee, "approuvée")}>Approuver</Button>
-              </div>
+          <Card key={approval.id}>
+            <div className="space-y-1">
+              <CardTitle>{employeeLabel(approval.employees)}</CardTitle>
+              <p className="text-sm text-muted-foreground">
+                {approval.leave_type_id} — {periodFromDays(approval.leave_request_days ?? [])}
+              </p>
+              <p className="text-xs text-muted-foreground">Statut: {approval.status}</p>
             </div>
           </Card>
         ))}
+
+        {companyId && approvals.length === 0 ? (
+          <Card>
+            <p className="text-sm text-muted-foreground">Aucune demande en attente pour cette société.</p>
+          </Card>
+        ) : null}
       </div>
     </section>
   );
