@@ -21,7 +21,7 @@ export default function CompanySettingsPage() {
           <input className="rounded-md border bg-card px-3 py-2 text-sm" defaultValue="Europe/Paris" />
           <input className="rounded-md border bg-card px-3 py-2 text-sm" defaultValue="FR" />
           <div className="md:col-span-2 flex justify-end">
-            <Button type="button" disabled>Persistance en cours d'activation</Button>
+            <Button type="button" disabled>Persistance en cours d&apos;activation</Button>
           </div>
         </form>
       </Card>
