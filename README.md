@@ -95,5 +95,6 @@ Déploiement Vercel:
 - Go-live définitif: `docs/go-live-definitif.md`
 - Go-live client (todo restant): `docs/go-live-todo-client.md`
 - Audit frontend complet: `docs/frontend-audit-complet-2026-04-10.md`
+- Prompt exécution go-live: `docs/prompt-go-live-correction.md`
 - Multi-sociétés propagation: `docs/multi-company-propagation.md`
 - Architecture interne des couches: `src/README.md`
