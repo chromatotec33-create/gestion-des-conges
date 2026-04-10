@@ -3,7 +3,7 @@ import { DomainError } from "@/domain/errors/domain-error";
 
 const DEFAULT_COMPANY_NAME = "Chromatotec";
 
-export async function resolveDefaultCompanyId(): Promise<string> {
+async function findExistingCompanyId() {
   const supabase = createServiceRoleClient();
 
   const byName = await supabase
@@ -23,13 +23,51 @@ export async function resolveDefaultCompanyId(): Promise<string> {
     return byName.data.id;
   }
 
-  const fallback = await supabase.from("companies").select("id").order("created_at", { ascending: true }).limit(1).maybeSingle<{ id: string }>();
+  const fallback = await supabase
+    .from("companies")
+    .select("id")
+    .order("created_at", { ascending: true })
+    .limit(1)
+    .maybeSingle<{ id: string }>();
 
-  if (fallback.error || !fallback.data?.id) {
-    throw new DomainError("No default company found", "DEFAULT_COMPANY_NOT_FOUND", {
-      cause: fallback.error?.message
+  if (fallback.error) {
+    throw new DomainError("Failed to resolve fallback company", "DEFAULT_COMPANY_FALLBACK_FAILED", {
+      cause: fallback.error.message
     });
   }
 
-  return fallback.data.id;
+  return fallback.data?.id ?? null;
+}
+
+async function createDefaultCompany() {
+  const supabase = createServiceRoleClient();
+
+  const { data, error } = await supabase
+    .from("companies")
+    .insert({
+      name: DEFAULT_COMPANY_NAME,
+      legal_name: "Chromatotec",
+      country_code: "FR",
+      timezone: "Europe/Paris",
+      reference_period_start_month: 6,
+      leave_accrual_mode: "A",
+      default_rounding_mode: "HALF_UP"
+    })
+    .select("id")
+    .single<{ id: string }>();
+
+  if (error || !data?.id) {
+    throw new DomainError("Failed to create default company", "DEFAULT_COMPANY_CREATE_FAILED", {
+      cause: error?.message
+    });
+  }
+
+  return data.id;
+}
+
+export async function resolveDefaultCompanyId(): Promise<string> {
+  const existing = await findExistingCompanyId();
+  if (existing) return existing;
+
+  return createDefaultCompany();
 }
