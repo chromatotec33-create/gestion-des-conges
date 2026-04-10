@@ -9,7 +9,17 @@ Application SaaS de gestion des congés/absences orientée entreprise française
 - Infra: Vercel, GitHub Actions
 - Tests: Vitest, Playwright
 
-## Démarrage rapide
+## Mode d'exploitation (important)
+
+Cette application est un **site web SaaS** :
+
+- l'interface est **hébergée sur Vercel** ;
+- la base de données et l'authentification sont gérées par **Supabase** ;
+- les utilisateurs se connectent via **l'URL web déployée** (et non via un progiciel installé en interne sur leurs postes).
+
+Le mode local sert uniquement au développement et à la QA.
+
+## Démarrage rapide (développement local)
 
 ```bash
 cp .env.example .env.local
@@ -35,6 +45,10 @@ Voir `.env.example` pour la liste complète.
 - `npm run test` : tests unitaires Vitest
 - `npm run test:e2e` : tests E2E Playwright
 
+## Endpoint de santé
+
+- `GET /api/health` : vérifie la validité de la configuration serveur et l'accès base de données Supabase.
+
 ## Migrations base de données
 
 Les migrations Supabase se trouvent dans `supabase/migrations/`.
@@ -45,15 +59,17 @@ Exemple via CLI:
 supabase db push
 ```
 
-## Seed admin interne
+## Seed admin de démonstration (environnements non production)
 
-Pour pré-production interne, lancer:
+Pour des environnements de démonstration/test, lancer:
 
 ```bash
 npm run seed:admin
 ```
 
 Ce seed crée le compte `admin@admin.com` (mot de passe `admin`) uniquement s'il n'existe pas, ainsi que les sociétés Chromatotec, Airmotec, JPA Technologies.
+
+> ⚠️ Ne jamais conserver ce compte/mot de passe en production publique.
 
 ## CI/CD
 
@@ -72,5 +88,6 @@ Le pipeline GitHub Actions est défini dans `.github/workflows/ci.yml`:
 - Phase 6: `docs/phase-6-ui-dashboard.md`
 - Phase 7: `docs/phase-7-tests.md`
 - Phase 8: `docs/setup-environment.md`, `docs/deployment-vercel.md`
+- Go-live définitif: `docs/go-live-definitif.md`
 - Multi-sociétés propagation: `docs/multi-company-propagation.md`
 - Architecture interne des couches: `src/README.md`

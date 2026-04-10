@@ -1,5 +1,15 @@
 # Déploiement production Vercel (Phase 8)
 
+## Modèle de fonctionnement cible
+
+En production, l'usage attendu est :
+
+1. l'utilisateur ouvre l'URL web Vercel de l'application ;
+2. il s'authentifie via Supabase Auth (flux web) ;
+3. toutes les opérations métier transitent par l'application web vers Supabase.
+
+Il n'y a pas de déploiement client lourd/progiciel à installer sur les postes utilisateurs.
+
 ## 1) Préparer Supabase
 
 1. Créer un projet Supabase production.
@@ -27,6 +37,7 @@ Le workflow `.github/workflows/ci.yml` est séparé en:
 
 - [ ] Secrets présents dans Vercel
 - [ ] Migrations appliquées en prod
+- [ ] Endpoint `GET /api/health` retourne `status: ok`
 - [ ] Compte de seed `admin@admin.com` supprimé/modifié avant ouverture publique
 - [ ] RLS validée sur jeux de comptes Employee/Manager/HR
 - [ ] Monitoring activé (logs applicatifs + erreurs)

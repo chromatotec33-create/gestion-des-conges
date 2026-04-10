@@ -1,5 +1,16 @@
 # Setup environnement (Phase 8)
 
+## Clarification d'architecture
+
+Le produit est conçu comme un **site web SaaS** :
+
+- front web déployé sur **Vercel** ;
+- API routes Next.js exécutées côté serveur (Vercel) ;
+- données et auth centralisées sur **Supabase**.
+
+Les utilisateurs métier utilisent l'application via l'URL web déployée.  
+L'installation locale décrite ci-dessous est uniquement destinée aux développeurs/testeurs.
+
 ## Prérequis
 
 - Node.js 20+
@@ -50,7 +61,7 @@ supabase db push
 
 ou avec SQL direct depuis `supabase/migrations`.
 
-## Seed Super Admin (pré-production interne)
+## Seed Super Admin (démo / QA uniquement)
 
 Le script `scripts/seed-admin.mjs` crée si inexistant:
 
@@ -65,6 +76,7 @@ npm run seed:admin
 ```
 
 > Avant exposition publique: changer/supprimer ce compte de seed.
+> Ce script ne doit pas être considéré comme un mécanisme d'onboarding production.
 
 ## Vérifications qualité
 

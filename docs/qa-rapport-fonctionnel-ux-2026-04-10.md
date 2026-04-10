@@ -29,6 +29,16 @@ Audit basé sur la revue des composants/pages App Router, APIs métiers, service
 - API demandes de congés (création, listing, annulation), propagation de configuration,
 - repositories Supabase, services métier et schéma SQL/RLS.
 
+### Hypothèse d'usage retenue (clarifiée)
+
+L'application est évaluée comme **site web SaaS** :
+
+- accès utilisateur via URL Vercel ;
+- traitement applicatif côté web (Next.js) ;
+- persistance/identité via Supabase.
+
+Ce n'est pas un progiciel local à installer sur des postes internes.
+
 ---
 
 ## 3) Fonctions déjà présentes (constat positif)
