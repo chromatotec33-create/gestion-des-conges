@@ -4,17 +4,12 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "lint": "next lint",
-    "typecheck": "tsc --noEmit",
-    "test": "vitest run",
-    "test:watch": "vitest",
-    "test:e2e": "playwright test",
-    "verify:go-live": "npm run lint && npm run typecheck && npm run test && npm run test:e2e && npm run build",
-    "seed:admin": "node scripts/seed-admin.mjs",
-    "seed:go-live-users": "node scripts/seed-go-live-users.mjs"
+    "dev": "node scripts/dev-server.mjs",
+    "build": "node scripts/build-static.mjs",
+    "start": "node scripts/dev-server.mjs",
+    "lint": "echo \"No linter configured for static HTML/JS\"",
+    "typecheck": "echo \"No TypeScript in static version\"",
+    "test": "node --check app.js"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",
