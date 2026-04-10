@@ -37,6 +37,7 @@ Le workflow `.github/workflows/ci.yml` est séparé en:
 
 - [ ] Secrets présents dans Vercel
 - [ ] Migrations appliquées en prod
+- [ ] Endpoint `GET /api/health` retourne `status: ok`
 - [ ] Compte de seed `admin@admin.com` supprimé/modifié avant ouverture publique
 - [ ] RLS validée sur jeux de comptes Employee/Manager/HR
 - [ ] Monitoring activé (logs applicatifs + erreurs)

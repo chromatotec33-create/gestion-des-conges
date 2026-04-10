@@ -45,6 +45,10 @@ Voir `.env.example` pour la liste complète.
 - `npm run test` : tests unitaires Vitest
 - `npm run test:e2e` : tests E2E Playwright
 
+## Endpoint de santé
+
+- `GET /api/health` : vérifie la validité de la configuration serveur et l'accès base de données Supabase.
+
 ## Migrations base de données
 
 Les migrations Supabase se trouvent dans `supabase/migrations/`.
@@ -84,5 +88,6 @@ Le pipeline GitHub Actions est défini dans `.github/workflows/ci.yml`:
 - Phase 6: `docs/phase-6-ui-dashboard.md`
 - Phase 7: `docs/phase-7-tests.md`
 - Phase 8: `docs/setup-environment.md`, `docs/deployment-vercel.md`
+- Go-live définitif: `docs/go-live-definitif.md`
 - Multi-sociétés propagation: `docs/multi-company-propagation.md`
 - Architecture interne des couches: `src/README.md`
