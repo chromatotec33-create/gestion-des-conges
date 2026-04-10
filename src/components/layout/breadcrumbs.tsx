@@ -37,9 +37,7 @@ export function Breadcrumbs() {
           return (
             <li key={href} className="flex items-center gap-2">
               <span>/</span>
-              <Link href={href} className="hover:text-foreground">
-                {labelMap[segment] ?? segment}
-              </Link>
+              <span className="hover:text-foreground">{labelMap[segment] ?? segment}</span>
             </li>
           );
         })}

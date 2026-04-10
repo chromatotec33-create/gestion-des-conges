@@ -13,11 +13,13 @@ const companies: Company[] = [
   { id: "airmotec", name: "Airmotec", tone: "airmotec" },
   { id: "jpa", name: "JPA Technologies", tone: "jpa" }
 ];
+const DEFAULT_COMPANY: Company = { id: "", name: "", tone: "chromatotec" };
 
 export function CompanySwitcher() {
-  const [companyId, setCompanyId] = useState(companies[0].id);
+  const defaultCompany = companies[0] ?? DEFAULT_COMPANY;
+  const [companyId, setCompanyId] = useState(defaultCompany.id);
 
-  const current = useMemo(() => companies.find((company) => company.id === companyId) ?? companies[0], [companyId]);
+  const current = useMemo(() => companies.find((company) => company.id === companyId) ?? defaultCompany, [companyId, defaultCompany]);
   const toneClass =
     current.tone === "chromatotec" ? "bg-chromatotec" : current.tone === "airmotec" ? "bg-airmotec" : "bg-jpa";
 

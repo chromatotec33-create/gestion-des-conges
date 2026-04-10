@@ -1,6 +1,17 @@
 import Link from "next/link";
+import type { Route } from "next";
 
-const sections = [
+type NavLink = {
+  readonly href: Route;
+  readonly label: string;
+};
+
+type NavSection = {
+  readonly title: string;
+  readonly links: readonly NavLink[];
+};
+
+const sections: readonly NavSection[] = [
   {
     title: "Opérations",
     links: [
