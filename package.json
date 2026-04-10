@@ -12,6 +12,7 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:e2e": "playwright test",
+    "verify:go-live": "npm run lint && npm run typecheck && npm run test && npm run test:e2e && npm run build",
     "seed:admin": "node scripts/seed-admin.mjs"
   },
   "dependencies": {

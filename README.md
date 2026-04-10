@@ -75,8 +75,8 @@ Ce seed crée le compte `admin@admin.com` (mot de passe `admin`) uniquement s'il
 
 Le pipeline GitHub Actions est défini dans `.github/workflows/ci.yml`:
 
-- **Job bloquant**: build applicatif uniquement (`npm run build`) pour éviter un blocage déploiement sur tests.
-- **Job optionnel non bloquant** (manuel `workflow_dispatch`): lint, typecheck, unit tests, e2e.
+- **Jobs bloquants**: `build` + `quality checks` (lint, typecheck, unit tests, e2e).
+- Utiliser `npm run verify:go-live` en local pour reproduire la chaîne qualité complète avant publication.
 
 ## Documentation de phase
 

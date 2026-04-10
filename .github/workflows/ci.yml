@@ -8,7 +8,7 @@ on:
 
 jobs:
   build:
-    name: Build (blocking)
+    name: Build
     runs-on: ubuntu-latest
 
     steps:
@@ -27,11 +27,9 @@ jobs:
       - name: Build application
         run: npm run build
 
-  quality_optional:
-    name: Quality checks (non-blocking)
-    if: github.event_name == 'workflow_dispatch'
+  quality:
+    name: Quality checks (blocking)
     runs-on: ubuntu-latest
-    continue-on-error: true
 
     steps:
       - name: Checkout

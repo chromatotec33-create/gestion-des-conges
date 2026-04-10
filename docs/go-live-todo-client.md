@@ -47,6 +47,8 @@ Le socle est en place (Next.js + Supabase + migrations + APIs), mais la publicat
 
 **Critère GO:** pipeline qualité bloquante et sécurité validée par une checklist signée.
 
+> Statut actuel: la CI a été durcie pour rendre les checks qualité bloquants sur `push`/`pull_request`, mais le GO reste conditionné à l'obtention de pipelines verts et à la validation métier/RLS.
+
 ---
 
 ## P1 — Fortement recommandé dans la même fenêtre de release

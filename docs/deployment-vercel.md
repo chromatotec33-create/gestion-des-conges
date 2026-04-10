@@ -30,8 +30,8 @@ Il n'y a pas de déploiement client lourd/progiciel à installer sur les postes 
 
 Le workflow `.github/workflows/ci.yml` est séparé en:
 
-- **Build (blocking)**: uniquement le build applicatif (ne bloque pas le déploiement sur un test).
-- **Quality checks (non-blocking)**: lint/typecheck/tests exécutables manuellement.
+- **Build (blocking)**: build applicatif.
+- **Quality checks (blocking)**: lint, typecheck, tests unitaires, tests e2e.
 
 ## 4) Check-list go-live
 
