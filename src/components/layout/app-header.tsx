@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { Search } from "lucide-react";
 import { Breadcrumbs } from "@/components/layout/breadcrumbs";
 import { CompanyContext } from "@/components/layout/company-context";
 import { ThemeToggle } from "@/components/layout/theme-toggle";
