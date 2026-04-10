@@ -3,80 +3,39 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self'; script-src 'self'; img-src 'self' data:; object-src 'none'; base-uri 'self'; frame-ancestors 'none';" />
-    <title>Gestion des congés</title>
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self'; script-src 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'none';" />
+    <title>Accueil - Gestion des congés</title>
     <link rel="stylesheet" href="./styles.css" />
   </head>
   <body>
+    <header class="topbar" data-app-header></header>
     <main class="container">
-      <header class="header">
+      <section class="hero">
         <h1>Gestion des congés</h1>
-        <p>Version HTML + JavaScript simple, cohérente et sécurisée.</p>
-      </header>
-
-      <section class="panel" aria-labelledby="form-title">
-        <h2 id="form-title">Nouvelle demande</h2>
-        <form id="leave-form" novalidate>
-          <div class="field-row">
-            <label for="employee">Collaborateur</label>
-            <input id="employee" name="employee" type="text" maxlength="60" required />
-          </div>
-
-          <div class="field-row">
-            <label for="type">Type</label>
-            <select id="type" name="type" required>
-              <option value="">Choisir</option>
-              <option value="Congés payés">Congés payés</option>
-              <option value="RTT">RTT</option>
-              <option value="Maladie">Maladie</option>
-              <option value="Exceptionnel">Exceptionnel</option>
-            </select>
-          </div>
-
-          <div class="field-grid">
-            <div class="field-row">
-              <label for="start-date">Début</label>
-              <input id="start-date" name="startDate" type="date" required />
-            </div>
-            <div class="field-row">
-              <label for="end-date">Fin</label>
-              <input id="end-date" name="endDate" type="date" required />
-            </div>
-          </div>
-
-          <div class="field-row">
-            <label for="reason">Motif (optionnel)</label>
-            <textarea id="reason" name="reason" rows="3" maxlength="240"></textarea>
-          </div>
-
-          <div class="actions">
-            <button type="submit">Soumettre</button>
-            <span id="form-status" role="status" aria-live="polite"></span>
-          </div>
-        </form>
+        <p>Une version HTML complète avec pages d'accueil, connexion, demande et suivi.</p>
       </section>
 
-      <section class="panel" aria-labelledby="list-title">
-        <h2 id="list-title">Demandes enregistrées</h2>
-        <p class="hint">Les données sont conservées localement dans votre navigateur.</p>
-        <div class="table-wrap">
-          <table>
-            <thead>
-              <tr>
-                <th>Collaborateur</th>
-                <th>Type</th>
-                <th>Période</th>
-                <th>Jours</th>
-                <th>Motif</th>
-                <th>Action</th>
-              </tr>
-            </thead>
-            <tbody id="requests-body"></tbody>
-          </table>
-        </div>
+      <section class="grid-cards">
+        <article class="panel">
+          <h2>Se connecter</h2>
+          <p>Accédez à votre espace collaborateur.</p>
+          <a class="button-link" href="./connexion.html">Aller à la connexion</a>
+        </article>
+
+        <article class="panel">
+          <h2>Faire une demande</h2>
+          <p>Soumettez un nouveau congé en quelques secondes.</p>
+          <a class="button-link" href="./demande.html">Créer une demande</a>
+        </article>
+
+        <article class="panel">
+          <h2>Suivre mes demandes</h2>
+          <p>Visualisez les demandes et leur état (en attente/annulée).</p>
+          <a class="button-link" href="./suivi.html">Ouvrir le suivi</a>
+        </article>
       </section>
     </main>
 
-    <script type="module" src="./app.js"></script>
+    <script type="module" src="./index-page.js"></script>
   </body>
 </html>

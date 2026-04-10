@@ -1,45 +1,27 @@
-# Gestion des congés — version HTML + JavaScript
+# Gestion des congés — version HTML multi-pages
 
-Ce projet a été simplifié pour fonctionner comme un **site statique** en HTML/CSS/JavaScript, sans framework.
+Le projet est maintenant une application **100% HTML/CSS/JavaScript** avec les écrans clés:
 
-## Objectifs de cette version
+- `index.html` : page d'accueil
+- `connexion.html` : authentification locale (démo)
+- `demande.html` : création de demande de congé
+- `suivi.html` : suivi des demandes de l'utilisateur connecté
 
-- **Simple** : architecture minimale (3 fichiers applicatifs).
-- **Cohérente** : une seule page, flux utilisateur clair.
-- **Sécurisée** :
-  - politique CSP stricte dans `index.html` ;
-  - rendu DOM via `textContent` (pas d'injection HTML) ;
-  - validations de formulaire côté client.
-- **Fonctionnelle** : création/suppression de demandes de congés, persistance locale (`localStorage`).
+## Fonctionnement
 
-## Fichiers principaux
+- Authentification locale de démonstration (session stockée en `localStorage`).
+- Les demandes sont persistées en `localStorage`.
+- Navigation simple entre les pages.
+- Sécurité côté client: CSP stricte + rendu DOM avec `textContent`.
 
-- `index.html` : structure de l'interface.
-- `styles.css` : styles responsives.
-- `app.js` : logique métier côté client.
-- `scripts/dev-server.mjs` : serveur HTTP local minimal.
-- `scripts/build-static.mjs` : build statique vers `dist/`.
-
-## Démarrage
+## Commandes
 
 ```bash
 npm run dev
-```
-
-Application locale: `http://localhost:3000`
-
-## Build
-
-```bash
+npm run test
 npm run build
 ```
 
-Sortie: `dist/`
-
-## Tests / vérifications
-
-```bash
-npm run test
-```
-
-Vérifie la syntaxe JavaScript du fichier `app.js`.
+- `dev` : serveur local sur `http://localhost:3000`
+- `test` : vérification syntaxique JavaScript
+- `build` : génération statique dans `dist/`

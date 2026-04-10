@@ -1,129 +1,108 @@
-const STORAGE_KEY = 'leave_requests_v1';
+const REQUESTS_KEY = 'gdc_requests_v2';
+const SESSION_KEY = 'gdc_session_v1';
 
-const form = document.querySelector('#leave-form');
-const tbody = document.querySelector('#requests-body');
-const statusElement = document.querySelector('#form-status');
-
-const safeText = (value) => String(value ?? '').trim();
-
-const readRequests = () => {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    const parsed = raw ? JSON.parse(raw) : [];
-    return Array.isArray(parsed) ? parsed : [];
-  } catch {
-    return [];
+export const storage = {
+  getRequests() {
+    try {
+      const data = JSON.parse(localStorage.getItem(REQUESTS_KEY) || '[]');
+      return Array.isArray(data) ? data : [];
+    } catch {
+      return [];
+    }
+  },
+  setRequests(requests) {
+    localStorage.setItem(REQUESTS_KEY, JSON.stringify(requests));
+  },
+  getSession() {
+    try {
+      const data = JSON.parse(localStorage.getItem(SESSION_KEY) || 'null');
+      return data && typeof data === 'object' ? data : null;
+    } catch {
+      return null;
+    }
+  },
+  setSession(session) {
+    localStorage.setItem(SESSION_KEY, JSON.stringify(session));
+  },
+  clearSession() {
+    localStorage.removeItem(SESSION_KEY);
   }
 };
 
-const writeRequests = (requests) => {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(requests));
-};
+export const users = [
+  { email: 'admin@entreprise.fr', password: 'Admin123!', name: 'Admin RH' },
+  { email: 'manager@entreprise.fr', password: 'Manager123!', name: 'Manager Equipe' },
+  { email: 'employee@entreprise.fr', password: 'Employee123!', name: 'Collaborateur' }
+];
 
-const formatDate = (dateString) => {
-  const date = new Date(`${dateString}T00:00:00`);
-  if (Number.isNaN(date.getTime())) {
-    return 'Date invalide';
-  }
+export const formatDate = (isoDate) => {
+  const date = new Date(`${isoDate}T00:00:00`);
+  if (Number.isNaN(date.getTime())) return 'Date invalide';
   return new Intl.DateTimeFormat('fr-FR', { dateStyle: 'medium' }).format(date);
 };
 
-const getDayCount = (startDate, endDate) => {
-  const start = new Date(`${startDate}T00:00:00`);
-  const end = new Date(`${endDate}T00:00:00`);
-  const ms = end.getTime() - start.getTime();
-  return Math.floor(ms / 86400000) + 1;
+export const computeDays = (start, end) => {
+  const startDate = new Date(`${start}T00:00:00`);
+  const endDate = new Date(`${end}T00:00:00`);
+  return Math.floor((endDate - startDate) / 86400000) + 1;
 };
 
-const render = () => {
-  const requests = readRequests();
-  tbody.textContent = '';
-
-  if (requests.length === 0) {
-    const row = document.createElement('tr');
-    const cell = document.createElement('td');
-    cell.colSpan = 6;
-    cell.textContent = 'Aucune demande enregistrée.';
-    row.appendChild(cell);
-    tbody.appendChild(row);
-    return;
+export const requireAuth = () => {
+  const session = storage.getSession();
+  if (!session) {
+    window.location.href = './connexion.html';
+    return null;
   }
+  return session;
+};
 
-  requests.forEach((request) => {
-    const row = document.createElement('tr');
+export const mountHeader = (activePath) => {
+  const header = document.querySelector('[data-app-header]');
+  if (!header) return;
 
-    const employeeCell = document.createElement('td');
-    employeeCell.textContent = request.employee;
+  const session = storage.getSession();
 
-    const typeCell = document.createElement('td');
-    typeCell.textContent = request.type;
+  header.innerHTML = '';
+  const nav = document.createElement('nav');
+  nav.className = 'nav';
 
-    const periodCell = document.createElement('td');
-    periodCell.textContent = `${formatDate(request.startDate)} → ${formatDate(request.endDate)}`;
+  const links = [
+    { href: './index.html', label: 'Accueil' },
+    { href: './demande.html', label: 'Demande' },
+    { href: './suivi.html', label: 'Suivi' }
+  ];
 
-    const daysCell = document.createElement('td');
-    daysCell.textContent = String(getDayCount(request.startDate, request.endDate));
+  links.forEach((link) => {
+    const a = document.createElement('a');
+    a.href = link.href;
+    a.textContent = link.label;
+    if (activePath.endsWith(link.href.replace('./', ''))) a.className = 'active';
+    nav.appendChild(a);
+  });
 
-    const reasonCell = document.createElement('td');
-    reasonCell.textContent = request.reason || '—';
+  const right = document.createElement('div');
+  right.className = 'nav-right';
 
-    const actionCell = document.createElement('td');
-    const removeBtn = document.createElement('button');
-    removeBtn.type = 'button';
-    removeBtn.className = 'danger';
-    removeBtn.textContent = 'Supprimer';
-    removeBtn.addEventListener('click', () => {
-      const next = readRequests().filter((item) => item.id !== request.id);
-      writeRequests(next);
-      render();
+  if (session) {
+    const user = document.createElement('span');
+    user.textContent = `Connecté: ${session.name}`;
+
+    const logout = document.createElement('button');
+    logout.type = 'button';
+    logout.className = 'secondary';
+    logout.textContent = 'Déconnexion';
+    logout.addEventListener('click', () => {
+      storage.clearSession();
+      window.location.href = './connexion.html';
     });
 
-    actionCell.appendChild(removeBtn);
+    right.append(user, logout);
+  } else {
+    const login = document.createElement('a');
+    login.href = './connexion.html';
+    login.textContent = 'Connexion';
+    right.appendChild(login);
+  }
 
-    row.append(employeeCell, typeCell, periodCell, daysCell, reasonCell, actionCell);
-    tbody.appendChild(row);
-  });
+  header.append(nav, right);
 };
-
-form.addEventListener('submit', (event) => {
-  event.preventDefault();
-
-  const formData = new FormData(form);
-  const employee = safeText(formData.get('employee'));
-  const type = safeText(formData.get('type'));
-  const startDate = safeText(formData.get('startDate'));
-  const endDate = safeText(formData.get('endDate'));
-  const reason = safeText(formData.get('reason'));
-
-  if (!employee || !type || !startDate || !endDate) {
-    statusElement.textContent = 'Veuillez compléter tous les champs obligatoires.';
-    return;
-  }
-
-  if (employee.length < 2) {
-    statusElement.textContent = 'Le nom du collaborateur doit contenir au moins 2 caractères.';
-    return;
-  }
-
-  if (new Date(endDate) < new Date(startDate)) {
-    statusElement.textContent = 'La date de fin doit être postérieure ou égale à la date de début.';
-    return;
-  }
-
-  const requests = readRequests();
-  requests.unshift({
-    id: crypto.randomUUID(),
-    employee,
-    type,
-    startDate,
-    endDate,
-    reason
-  });
-
-  writeRequests(requests);
-  form.reset();
-  statusElement.textContent = 'Demande enregistrée avec succès.';
-  render();
-});
-
-render();
