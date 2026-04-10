@@ -105,7 +105,7 @@ export function NewRequestForm({ leaveTypes }: NewRequestFormProps) {
       <CardTitle>Nouvelle demande de congé</CardTitle>
       <form className="mt-4 space-y-4" onSubmit={onSubmit}>
         <label className="block text-sm">
-          Type d'absence
+          Type d&apos;absence
           <select className="mt-1 w-full rounded-md border bg-card px-3 py-2" value={leaveTypeId} onChange={(e) => setLeaveTypeId(e.target.value)}>
             {leaveTypes.map((leaveType) => (
               <option key={leaveType.id} value={leaveType.id}>

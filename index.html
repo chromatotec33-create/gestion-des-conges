@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' https://esm.sh https://*.supabase.co; connect-src 'self' https://*.supabase.co; style-src 'self'; script-src 'self' https://esm.sh; object-src 'none'; base-uri 'self'; frame-ancestors 'none';" />
+    <title>Portail Congés</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar">
+        <h1>Portail Congés</h1>
+        <p id="user-label" class="muted">Non connecté</p>
+        <p id="env-label" class="muted">Env: non chargé</p>
+        <nav>
+          <button class="nav-btn active" data-view="dashboard">Dashboard</button>
+          <button class="nav-btn" data-view="demande">Nouvelle demande</button>
+          <button class="nav-btn" data-view="validation">Validation services</button>
+        </nav>
+      </aside>
+
+      <main class="content">
+        <header class="topbar">
+          <h2 id="page-title">Dashboard</h2>
+          <div class="top-actions">
+            <button id="logout-btn" class="secondary">Déconnexion</button>
+          </div>
+        </header>
+
+        <section id="auth-card" class="card">
+          <h3>Connexion</h3>
+          <p class="muted">La configuration Supabase vient des variables d'environnement Vercel.</p>
+          <form id="login-form">
+            <div class="grid-2">
+              <label>Email<input name="email" type="email" required /></label>
+              <label>Mot de passe<input name="password" type="password" required /></label>
+            </div>
+            <div class="actions"><button type="submit">Se connecter</button><span id="login-status" class="muted"></span></div>
+          </form>
+        </section>
+
+        <section id="dashboard-view" class="card hidden"></section>
+        <section id="demande-view" class="card hidden"></section>
+        <section id="validation-view" class="card hidden"></section>
+      </main>
+    </div>
+
+    <script src="./env.js"></script>
+    <script type="module" src="./app.js"></script>
+  </body>
+</html>
