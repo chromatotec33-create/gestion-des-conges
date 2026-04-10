@@ -101,6 +101,28 @@ export class SupabaseLeaveRequestRepository implements LeaveRequestRepository {
     return data ? mapLeaveRequest(data) : null;
   }
 
+  async findByEmployeeId(companyId: UUID, employeeId: UUID, limit = 20): Promise<LeaveRequest[]> {
+    const supabase = createServiceRoleClient();
+    const { data, error } = await supabase
+      .from("leave_requests")
+      .select(
+        "id, company_id, employee_id, leave_type_id, status, reason, requested_days, created_by, created_at, leave_request_days(leave_date, duration_days, day_part)"
+      )
+      .eq("company_id", companyId)
+      .eq("employee_id", employeeId)
+      .order("created_at", { ascending: false })
+      .limit(limit)
+      .returns<LeaveRequestRow[]>();
+
+    if (error) {
+      throw new DomainError("Failed to fetch employee leave requests", "REPOSITORY_LEAVE_REQUEST_LIST_FAILED", {
+        cause: error.message
+      });
+    }
+
+    return (data ?? []).map(mapLeaveRequest);
+  }
+
   async updateStatus(
     companyId: UUID,
     requestId: UUID,

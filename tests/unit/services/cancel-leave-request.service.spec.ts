@@ -26,6 +26,7 @@ describe("CancelLeaveRequestService", () => {
     const leaveRequestRepository: LeaveRequestRepository = {
       create: vi.fn(),
       findById: vi.fn().mockResolvedValue(request),
+      findByEmployeeId: vi.fn().mockResolvedValue([]),
       updateStatus: vi.fn().mockResolvedValue(undefined)
     };
 

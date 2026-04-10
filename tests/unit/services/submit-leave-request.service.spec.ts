@@ -30,6 +30,7 @@ describe("SubmitLeaveRequestService", () => {
     const leaveRequestRepository: LeaveRequestRepository = {
       create: vi.fn().mockImplementation(async (request) => request),
       findById: vi.fn(),
+      findByEmployeeId: vi.fn().mockResolvedValue([]),
       updateStatus: vi.fn()
     };
 

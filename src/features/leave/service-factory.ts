@@ -32,6 +32,7 @@ export function createLeaveServices() {
   );
 
   return {
+    leaveRequestRepository,
     submitLeaveRequestService,
     cancelLeaveRequestService
   };
