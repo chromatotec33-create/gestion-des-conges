@@ -1,22 +1,22 @@
-const REQUESTS_KEY = 'gdc_requests_v2';
+const REQUESTS_KEY = 'gdc_requests_v3';
 const SESSION_KEY = 'gdc_session_v1';
 
 export const storage = {
   getRequests() {
     try {
-      const data = JSON.parse(localStorage.getItem(REQUESTS_KEY) || '[]');
-      return Array.isArray(data) ? data : [];
+      const value = JSON.parse(localStorage.getItem(REQUESTS_KEY) || '[]');
+      return Array.isArray(value) ? value : [];
     } catch {
       return [];
     }
   },
-  setRequests(requests) {
-    localStorage.setItem(REQUESTS_KEY, JSON.stringify(requests));
+  setRequests(items) {
+    localStorage.setItem(REQUESTS_KEY, JSON.stringify(items));
   },
   getSession() {
     try {
-      const data = JSON.parse(localStorage.getItem(SESSION_KEY) || 'null');
-      return data && typeof data === 'object' ? data : null;
+      const value = JSON.parse(localStorage.getItem(SESSION_KEY) || 'null');
+      return value && typeof value === 'object' ? value : null;
     } catch {
       return null;
     }
@@ -30,22 +30,14 @@ export const storage = {
 };
 
 export const users = [
-  { email: 'admin@entreprise.fr', password: 'Admin123!', name: 'Admin RH' },
-  { email: 'manager@entreprise.fr', password: 'Manager123!', name: 'Manager Equipe' },
-  { email: 'employee@entreprise.fr', password: 'Employee123!', name: 'Collaborateur' }
+  { email: 'admin@entreprise.fr', password: 'Admin123!', name: 'Admin RH', role: 'admin' },
+  { email: 'manager@entreprise.fr', password: 'Manager123!', name: 'Manager Equipe', role: 'manager' },
+  { email: 'employee@entreprise.fr', password: 'Employee123!', name: 'Collaborateur', role: 'employee' }
 ];
 
-export const formatDate = (isoDate) => {
-  const date = new Date(`${isoDate}T00:00:00`);
-  if (Number.isNaN(date.getTime())) return 'Date invalide';
-  return new Intl.DateTimeFormat('fr-FR', { dateStyle: 'medium' }).format(date);
-};
+export const formatDate = (isoDate) => new Intl.DateTimeFormat('fr-FR', { dateStyle: 'medium' }).format(new Date(`${isoDate}T00:00:00`));
 
-export const computeDays = (start, end) => {
-  const startDate = new Date(`${start}T00:00:00`);
-  const endDate = new Date(`${end}T00:00:00`);
-  return Math.floor((endDate - startDate) / 86400000) + 1;
-};
+export const computeDays = (start, end) => Math.floor((new Date(`${end}T00:00:00`) - new Date(`${start}T00:00:00`)) / 86400000) + 1;
 
 export const requireAuth = () => {
   const session = storage.getSession();
@@ -56,53 +48,95 @@ export const requireAuth = () => {
   return session;
 };
 
-export const mountHeader = (activePath) => {
-  const header = document.querySelector('[data-app-header]');
-  if (!header) return;
+export const statusLabel = (status) => ({
+  pending: 'En attente',
+  approved: 'Approuvée',
+  rejected: 'Refusée',
+  cancelled: 'Annulée'
+}[status] || 'Inconnu');
 
+export const statusClass = (status) => ({
+  pending: 'badge pending',
+  approved: 'badge approved',
+  rejected: 'badge rejected',
+  cancelled: 'badge cancelled'
+}[status] || 'badge');
+
+export const mountPublicHeader = () => {
+  const holder = document.querySelector('[data-public-header]');
+  if (!holder) return;
   const session = storage.getSession();
+  holder.innerHTML = '';
 
-  header.innerHTML = '';
   const nav = document.createElement('nav');
-  nav.className = 'nav';
+  nav.className = 'public-nav';
+  nav.innerHTML = '<a href="./index.html">Accueil</a>';
+
+  const right = document.createElement('div');
+  if (session) {
+    const a = document.createElement('a');
+    a.href = './dashboard.html';
+    a.className = 'button-link';
+    a.textContent = 'Ouvrir le portail RH';
+    right.appendChild(a);
+  } else {
+    const a = document.createElement('a');
+    a.href = './connexion.html';
+    a.className = 'button-link';
+    a.textContent = 'Connexion sécurisée';
+    right.appendChild(a);
+  }
+
+  holder.append(nav, right);
+};
+
+export const mountAppShell = (activePage) => {
+  const shell = document.querySelector('[data-app-shell]');
+  if (!shell) return;
+  const session = requireAuth();
+  if (!session) return;
 
   const links = [
-    { href: './index.html', label: 'Accueil' },
-    { href: './demande.html', label: 'Demande' },
-    { href: './suivi.html', label: 'Suivi' }
+    { key: 'dashboard', href: './dashboard.html', label: 'Tableau de bord RH' },
+    { key: 'demande', href: './demande.html', label: 'Nouvelle demande' },
+    { key: 'suivi', href: './suivi.html', label: 'Mes demandes' },
+    { key: 'approvals', href: './approvals.html', label: 'Validation manager' }
   ];
 
+  shell.innerHTML = '';
+
+  const aside = document.createElement('aside');
+  aside.className = 'sidebar';
+  const title = document.createElement('h1');
+  title.textContent = 'Portail RH';
+  const role = document.createElement('p');
+  role.className = 'muted';
+  role.textContent = `${session.name} • ${session.role}`;
+
+  const nav = document.createElement('nav');
+  nav.className = 'side-nav';
   links.forEach((link) => {
     const a = document.createElement('a');
     a.href = link.href;
     a.textContent = link.label;
-    if (activePath.endsWith(link.href.replace('./', ''))) a.className = 'active';
+    if (link.key === activePage) a.className = 'active';
     nav.appendChild(a);
   });
 
-  const right = document.createElement('div');
-  right.className = 'nav-right';
+  const logout = document.createElement('button');
+  logout.type = 'button';
+  logout.className = 'secondary';
+  logout.textContent = 'Déconnexion';
+  logout.addEventListener('click', () => {
+    storage.clearSession();
+    window.location.href = './connexion.html';
+  });
 
-  if (session) {
-    const user = document.createElement('span');
-    user.textContent = `Connecté: ${session.name}`;
+  aside.append(title, role, nav, logout);
 
-    const logout = document.createElement('button');
-    logout.type = 'button';
-    logout.className = 'secondary';
-    logout.textContent = 'Déconnexion';
-    logout.addEventListener('click', () => {
-      storage.clearSession();
-      window.location.href = './connexion.html';
-    });
+  const main = document.createElement('section');
+  main.className = 'app-content';
+  main.innerHTML = '<div data-app-content></div>';
 
-    right.append(user, logout);
-  } else {
-    const login = document.createElement('a');
-    login.href = './connexion.html';
-    login.textContent = 'Connexion';
-    right.appendChild(login);
-  }
-
-  header.append(nav, right);
+  shell.append(aside, main);
 };

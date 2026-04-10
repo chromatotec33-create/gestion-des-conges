@@ -1,3 +1,3 @@
-import { mountHeader } from './app.js';
+import { mountPublicHeader } from './app.js';
 
-mountHeader(window.location.pathname);
+mountPublicHeader();

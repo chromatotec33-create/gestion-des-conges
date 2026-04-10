@@ -1,69 +1,34 @@
-import { computeDays, formatDate, mountHeader, requireAuth, storage } from './app.js';
+import { formatDate, mountAppShell, requireAuth, statusClass, statusLabel, storage } from './app.js';
 
 const session = requireAuth();
-mountHeader(window.location.pathname);
-
-if (!session) {
-  throw new Error('User not authenticated');
-}
-
-const tbody = document.querySelector('#requests-body');
+mountAppShell('suivi');
+const root = document.querySelector('[data-app-content]');
 
 const render = () => {
-  const requests = storage.getRequests().filter((item) => item.owner === session.email);
-  tbody.textContent = '';
+  const mine = storage.getRequests().filter((r) => r.owner === session.email);
+  root.innerHTML = `
+    <h2 class="page-title">Mes demandes</h2>
+    <section class="panel table-wrap">
+      <table>
+        <thead><tr><th>Type</th><th>Période</th><th>Jours</th><th>Motif</th><th>Statut</th><th>Action</th></tr></thead>
+        <tbody>${mine.map((r) => `
+          <tr>
+            <td>${r.type}</td>
+            <td>${formatDate(r.startDate)} → ${formatDate(r.endDate)}</td>
+            <td>${r.days}</td>
+            <td>${r.reason || '—'}</td>
+            <td><span class="${statusClass(r.status)}">${statusLabel(r.status)}</span></td>
+            <td>${r.status === 'pending' ? `<button data-id="${r.id}" class="danger">Annuler</button>` : '—'}</td>
+          </tr>`).join('') || '<tr><td colspan="6">Aucune demande</td></tr>'}</tbody>
+      </table>
+    </section>`;
 
-  if (requests.length === 0) {
-    const row = document.createElement('tr');
-    const cell = document.createElement('td');
-    cell.colSpan = 6;
-    cell.textContent = 'Aucune demande trouvée.';
-    row.appendChild(cell);
-    tbody.appendChild(row);
-    return;
-  }
-
-  requests.forEach((request) => {
-    const row = document.createElement('tr');
-
-    const type = document.createElement('td');
-    type.textContent = request.type;
-
-    const period = document.createElement('td');
-    period.textContent = `${formatDate(request.startDate)} → ${formatDate(request.endDate)}`;
-
-    const days = document.createElement('td');
-    days.textContent = String(computeDays(request.startDate, request.endDate));
-
-    const reason = document.createElement('td');
-    reason.textContent = request.reason || '—';
-
-    const status = document.createElement('td');
-    status.textContent = request.status;
-
-    const actionCell = document.createElement('td');
-    if (request.status === 'En attente') {
-      const cancel = document.createElement('button');
-      cancel.type = 'button';
-      cancel.className = 'danger';
-      cancel.textContent = 'Annuler';
-      cancel.addEventListener('click', () => {
-        const all = storage.getRequests();
-        const updated = all.map((entry) => (
-          entry.id === request.id
-            ? { ...entry, status: 'Annulée' }
-            : entry
-        ));
-        storage.setRequests(updated);
-        render();
-      });
-      actionCell.appendChild(cancel);
-    } else {
-      actionCell.textContent = '—';
-    }
-
-    row.append(type, period, days, reason, status, actionCell);
-    tbody.appendChild(row);
+  root.querySelectorAll('[data-id]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const id = btn.getAttribute('data-id');
+      storage.setRequests(storage.getRequests().map((r) => (r.id === id ? { ...r, status: 'cancelled' } : r)));
+      render();
+    });
   });
 };
 

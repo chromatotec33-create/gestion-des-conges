@@ -9,7 +9,7 @@
     "start": "node scripts/dev-server.mjs",
     "lint": "echo \"No linter configured for static HTML/JS\"",
     "typecheck": "echo \"No TypeScript in static version\"",
-    "test": "node --check app.js && node --check index-page.js && node --check connexion-page.js && node --check demande-page.js && node --check suivi-page.js && node --check scripts/dev-server.mjs && node --check scripts/build-static.mjs"
+    "test": "node --check app.js && node --check index-page.js && node --check connexion-page.js && node --check dashboard-page.js && node --check demande-page.js && node --check suivi-page.js && node --check approvals-page.js && node --check scripts/dev-server.mjs && node --check scripts/build-static.mjs"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",

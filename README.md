@@ -1,18 +1,21 @@
-# Gestion des congés — version HTML multi-pages
+# Gestion des congés — transformation HTML du portail initial
 
-Le projet est maintenant une application **100% HTML/CSS/JavaScript** avec les écrans clés:
+Cette version reprend l'expérience de l'ancien projet (portail RH) en **HTML/CSS/JavaScript pur** au lieu de Next.js.
 
-- `index.html` : page d'accueil
-- `connexion.html` : authentification locale (démo)
-- `demande.html` : création de demande de congé
-- `suivi.html` : suivi des demandes de l'utilisateur connecté
+## Écrans disponibles
 
-## Fonctionnement
+- `index.html` : accueil produit
+- `connexion.html` : connexion sécurisée
+- `dashboard.html` : tableau de bord RH (KPI + activités)
+- `demande.html` : nouvelle demande de congé
+- `suivi.html` : suivi collaborateur
+- `approvals.html` : validation manager
 
-- Authentification locale de démonstration (session stockée en `localStorage`).
-- Les demandes sont persistées en `localStorage`.
-- Navigation simple entre les pages.
-- Sécurité côté client: CSP stricte + rendu DOM avec `textContent`.
+## Données (mode démo)
+
+- Session utilisateur en `localStorage`
+- Demandes de congés en `localStorage`
+- Statuts: `pending`, `approved`, `rejected`, `cancelled`
 
 ## Commandes
 
@@ -21,7 +24,3 @@ npm run dev
 npm run test
 npm run build
 ```
-
-- `dev` : serveur local sur `http://localhost:3000`
-- `test` : vérification syntaxique JavaScript
-- `build` : génération statique dans `dist/`

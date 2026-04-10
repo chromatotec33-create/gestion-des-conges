@@ -4,29 +4,21 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self'; script-src 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'none';" />
-    <title>Connexion - Gestion des congés</title>
+    <title>Connexion sécurisée</title>
     <link rel="stylesheet" href="./styles.css" />
   </head>
   <body>
-    <header class="topbar" data-app-header></header>
-    <main class="container narrow">
-      <section class="panel">
-        <h1>Connexion</h1>
-        <p class="hint">Comptes de démonstration: admin@entreprise.fr / Admin123!</p>
+    <main class="auth-wrap">
+      <section class="panel auth-panel">
+        <h1>Connexion sécurisée</h1>
+        <p class="muted">Accédez à votre portail RH organisation.</p>
+        <p class="hint">Demo: admin@entreprise.fr / Admin123!</p>
         <form id="login-form" novalidate>
-          <div class="field-row">
-            <label for="email">Email</label>
-            <input id="email" name="email" type="email" required />
-          </div>
-          <div class="field-row">
-            <label for="password">Mot de passe</label>
-            <input id="password" name="password" type="password" required />
-          </div>
-          <div class="actions">
-            <button type="submit">Se connecter</button>
-            <span id="login-status" role="status" aria-live="polite"></span>
-          </div>
+          <div class="field-row"><label for="email">Email</label><input id="email" name="email" type="email" required /></div>
+          <div class="field-row"><label for="password">Mot de passe</label><input id="password" name="password" type="password" required /></div>
+          <div class="actions"><button type="submit">Se connecter</button><span id="login-status" role="status" aria-live="polite"></span></div>
         </form>
+        <p><a href="./index.html">← Retour à l'accueil</a></p>
       </section>
     </main>
     <script type="module" src="./connexion-page.js"></script>

@@ -4,38 +4,20 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self'; script-src 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'none';" />
-    <title>Accueil - Gestion des congés</title>
+    <title>Gestion des congés — Portail RH</title>
     <link rel="stylesheet" href="./styles.css" />
   </head>
   <body>
-    <header class="topbar" data-app-header></header>
-    <main class="container">
-      <section class="hero">
-        <h1>Gestion des congés</h1>
-        <p>Une version HTML complète avec pages d'accueil, connexion, demande et suivi.</p>
-      </section>
-
+    <header class="public-header" data-public-header></header>
+    <main class="landing container">
+      <h1>Gestion des congés entreprise</h1>
+      <p class="lead">Version HTML fidèle au portail initial : dashboard RH, connexion sécurisée, demande et suivi.</p>
       <section class="grid-cards">
-        <article class="panel">
-          <h2>Se connecter</h2>
-          <p>Accédez à votre espace collaborateur.</p>
-          <a class="button-link" href="./connexion.html">Aller à la connexion</a>
-        </article>
-
-        <article class="panel">
-          <h2>Faire une demande</h2>
-          <p>Soumettez un nouveau congé en quelques secondes.</p>
-          <a class="button-link" href="./demande.html">Créer une demande</a>
-        </article>
-
-        <article class="panel">
-          <h2>Suivre mes demandes</h2>
-          <p>Visualisez les demandes et leur état (en attente/annulée).</p>
-          <a class="button-link" href="./suivi.html">Ouvrir le suivi</a>
-        </article>
+        <article class="panel"><h2>Dashboard RH</h2><p>KPI, demandes en attente, conformité.</p></article>
+        <article class="panel"><h2>Validation manager</h2><p>Pipeline des demandes pending / approved / rejected.</p></article>
+        <article class="panel"><h2>Suivi collaborateur</h2><p>Historique personnel avec statut détaillé.</p></article>
       </section>
     </main>
-
     <script type="module" src="./index-page.js"></script>
   </body>
 </html>

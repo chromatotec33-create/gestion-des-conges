@@ -1,49 +1,8 @@
 <!doctype html>
 <html lang="fr">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self'; script-src 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'none';" />
-    <title>Nouvelle demande - Gestion des congés</title>
-    <link rel="stylesheet" href="./styles.css" />
-  </head>
+  <head><meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self'; script-src 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'none';" /><title>Nouvelle demande</title><link rel="stylesheet" href="./styles.css" /></head>
   <body>
-    <header class="topbar" data-app-header></header>
-    <main class="container narrow">
-      <section class="panel">
-        <h1>Nouvelle demande de congé</h1>
-        <form id="request-form" novalidate>
-          <div class="field-row">
-            <label for="type">Type</label>
-            <select id="type" name="type" required>
-              <option value="">Choisir</option>
-              <option value="Congés payés">Congés payés</option>
-              <option value="RTT">RTT</option>
-              <option value="Maladie">Maladie</option>
-              <option value="Exceptionnel">Exceptionnel</option>
-            </select>
-          </div>
-          <div class="field-grid">
-            <div class="field-row">
-              <label for="start-date">Date début</label>
-              <input id="start-date" name="startDate" type="date" required />
-            </div>
-            <div class="field-row">
-              <label for="end-date">Date fin</label>
-              <input id="end-date" name="endDate" type="date" required />
-            </div>
-          </div>
-          <div class="field-row">
-            <label for="reason">Motif</label>
-            <textarea id="reason" name="reason" maxlength="240" rows="3"></textarea>
-          </div>
-          <div class="actions">
-            <button type="submit">Enregistrer</button>
-            <span id="request-status" role="status" aria-live="polite"></span>
-          </div>
-        </form>
-      </section>
-    </main>
+    <main class="app-shell" data-app-shell></main>
     <script type="module" src="./demande-page.js"></script>
   </body>
 </html>
