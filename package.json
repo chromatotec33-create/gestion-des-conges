@@ -10,11 +10,7 @@
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
-    "test:watch": "vitest",
-    "test:e2e": "playwright test",
-    "verify:go-live": "npm run lint && npm run typecheck && npm run test && npm run test:e2e && npm run build",
-    "seed:admin": "node scripts/seed-admin.mjs",
-    "seed:go-live-users": "node scripts/seed-go-live-users.mjs"
+    "test:e2e": "playwright test"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",

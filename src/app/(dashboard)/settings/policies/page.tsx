@@ -38,7 +38,7 @@ export default function PoliciesPage() {
             <input className="mt-1 w-full rounded-md border bg-card px-3 py-2 text-sm" defaultValue="12" />
           </label>
           <div className="md:col-span-2 flex justify-end">
-            <Button type="button" disabled>Persistance en cours d'activation</Button>
+            <Button type="button" disabled>Persistance en cours d&apos;activation</Button>
           </div>
         </form>
       </Card>
