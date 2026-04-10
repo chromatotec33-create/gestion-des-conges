@@ -50,6 +50,22 @@ supabase db push
 
 ou avec SQL direct depuis `supabase/migrations`.
 
+## Seed Super Admin (pré-production interne)
+
+Le script `scripts/seed-admin.mjs` crée si inexistant:
+
+- compte auth `admin@admin.com` / `admin`
+- sociétés `Chromatotec`, `Airmotec`, `JPA Technologies`
+- affectation `super_admin` globale via `user_company_roles`
+
+Commande:
+
+```bash
+npm run seed:admin
+```
+
+> Avant exposition publique: changer/supprimer ce compte de seed.
+
 ## Vérifications qualité
 
 ```bash

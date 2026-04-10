@@ -45,6 +45,16 @@ Exemple via CLI:
 supabase db push
 ```
 
+## Seed admin interne
+
+Pour pré-production interne, lancer:
+
+```bash
+npm run seed:admin
+```
+
+Ce seed crée le compte `admin@admin.com` (mot de passe `admin`) uniquement s'il n'existe pas, ainsi que les sociétés Chromatotec, Airmotec, JPA Technologies.
+
 ## CI/CD
 
 Le pipeline GitHub Actions est défini dans `.github/workflows/ci.yml`:
