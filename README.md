@@ -1,98 +1,57 @@
-# Gestion des congés — SaaS RH enterprise
+# Portail Congés (HTML + Supabase + Vercel)
 
-Application SaaS de gestion des congés/absences orientée entreprise française (conformité, auditabilité, multi-tenant), construite avec Next.js, Supabase et une architecture DDD/Clean modulaire.
+Interface moderne avec vues distinctes **Salarié**, **Chef de service**, **Direction/RH**.
 
-## Stack
+## Variables Vercel
 
-- Frontend: Next.js App Router, TypeScript strict, TailwindCSS, TanStack Query/Table
-- Backend: Supabase PostgreSQL, Supabase Auth, RLS, migrations SQL
-- Infra: Vercel, GitHub Actions
-- Tests: Vitest, Playwright
+- `APP_BASE_URL`
+- `NEXT_PUBLIC_SUPABASE_URL`
+- `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+- `SUPABASE_SERVICE_ROLE_KEY` (non exposée au client)
 
-## Mode d'exploitation (important)
+Le script `scripts/generate-env.mjs` génère `env.js` à partir des variables publiques.
 
-Cette application est un **site web SaaS** :
+## Fonctionnalités principales
 
-- l'interface est **hébergée sur Vercel** ;
-- la base de données et l'authentification sont gérées par **Supabase** ;
-- les utilisateurs se connectent via **l'URL web déployée** (et non via un progiciel installé en interne sur leurs postes).
+- Salarié: demande, brouillons, suivi avec barre de progression, demande d'annulation
+- Chef de service: validation individuelle + pré-validation en lot
+- Direction/RH: validation finale, message global, ajustement soldes, paramètres calendrier
+- Calendrier par rôle avec jours rouges + jours fériés
+- Motifs: congés payés, sans solde, autre (texte)
+- Durée: journée entière / demi-journée
+- Contrôles: chevauchement, solde insuffisant
+- Notes privées Chef↔Direction non visibles au collaborateur
 
-Le mode local sert uniquement au développement et à la QA.
+## SQL Supabase
 
-## Démarrage rapide (développement local)
+Appliquer la migration:
+
+- `supabase/migrations/20260410180000_full_leave_management.sql`
+
+## Lancer
 
 ```bash
-cp .env.example .env.local
-npm install
+APP_BASE_URL=http://localhost:3000 \
+NEXT_PUBLIC_SUPABASE_URL=https://xxx.supabase.co \
+NEXT_PUBLIC_SUPABASE_ANON_KEY=xxx \
 npm run dev
 ```
 
-Application locale: `http://localhost:3000`
-
-## Variables d'environnement
-
-Voir `.env.example` pour la liste complète.
-
-> **Sécurité**: `SUPABASE_SERVICE_ROLE_KEY` ne doit jamais être exposée au client. Usage strictement backend/server actions/API routes.
-
-## Scripts
-
-- `npm run dev` : lancement local
-- `npm run build` : build production
-- `npm run start` : start production
-- `npm run lint` : linting
-- `npm run typecheck` : vérification TypeScript
-- `npm run test` : tests unitaires Vitest
-- `npm run test:e2e` : tests E2E Playwright
-
-## Endpoint de santé
-
-- `GET /api/health` : vérifie la validité de la configuration serveur et l'accès base de données Supabase.
-
-## Migrations base de données
-
-Les migrations Supabase se trouvent dans `supabase/migrations/`.
-
-Exemple via CLI:
+## Build
 
 ```bash
-supabase db push
+npm run build
 ```
 
-## Seed admin de démonstration (environnements non production)
+Sortie: `dist/` (déploiement Vercel statique).
 
-Pour des environnements de démonstration/test, lancer:
+## Seed comptes de test
 
-```bash
-npm run seed:admin
-```
+Migration seed: `supabase/migrations/20260410190000_seed_fake_accounts.sql`
 
-Ce seed crée le compte `admin@admin.com` (mot de passe `admin`) uniquement s'il n'existe pas, ainsi que les sociétés Chromatotec, Airmotec, JPA Technologies.
+Comptes créés (mot de passe commun): `DemoPass123!`
 
-> ⚠️ Ne jamais conserver ce compte/mot de passe en production publique.
-
-## CI/CD
-
-Le pipeline GitHub Actions est défini dans `.github/workflows/ci.yml`:
-
-- **Jobs bloquants**: `build` + `quality checks` (lint, typecheck, unit tests, e2e).
-- Utiliser `npm run verify:go-live` en local pour reproduire la chaîne qualité complète avant publication.
-
-Déploiement Vercel:
-
-- `vercel.json` force le mode Next.js et l'output `.next` pour éviter une configuration erronée sur `public`.
-
-## Documentation de phase
-
-- Phase 1: `docs/phase-1-architecture.md`
-- Phase 2: `docs/phase-2-schema.md`
-- Phase 3: `docs/phase-3-auth-rls-security.md`
-- Phase 4: `docs/phase-4-domain-repositories-services.md`
-- Phase 5: `docs/phase-5-apis-server-actions.md`
-- Phase 6: `docs/phase-6-ui-dashboard.md`
-- Phase 7: `docs/phase-7-tests.md`
-- Phase 8: `docs/setup-environment.md`, `docs/deployment-vercel.md`
-- Go-live définitif: `docs/go-live-definitif.md`
-- Go-live client (todo restant): `docs/go-live-todo-client.md`
-- Multi-sociétés propagation: `docs/multi-company-propagation.md`
-- Architecture interne des couches: `src/README.md`
+- `salarie.demo@company.test`
+- `chef.demo@company.test`
+- `direction.demo@company.test`
+- `admin.demo@company.test`
