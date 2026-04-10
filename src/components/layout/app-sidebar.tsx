@@ -1,5 +1,10 @@
+"use client";
+
 import Link from "next/link";
 import type { Route } from "next";
+import { usePathname } from "next/navigation";
+import { Bell, CalendarClock, ClipboardCheck, FileClock, HelpCircle, LayoutDashboard, Settings2, ShieldCheck, Users, UsersRound } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 type NavLink = {
   readonly href: Route;
@@ -43,13 +48,31 @@ const sections: readonly NavSection[] = [
   }
 ];
 
+const iconByPath: Record<string, typeof LayoutDashboard> = {
+  "/dashboard": LayoutDashboard,
+  "/requests": FileClock,
+  "/calendar": CalendarClock,
+  "/help-center": HelpCircle,
+  "/profile": UsersRound,
+  "/approvals": ClipboardCheck,
+  "/teams": Users,
+  "/employees": Users,
+  "/settings/company": Settings2,
+  "/settings/policies": Settings2,
+  "/admin/users": ShieldCheck,
+  "/audit": ShieldCheck,
+  "/notifications": Bell
+};
+
 export function AppSidebar() {
+  const pathname = usePathname();
+
   return (
-    <aside className="hidden w-80 shrink-0 border-r bg-card p-5 lg:block">
-      <div className="mb-6">
+    <aside className="hidden w-80 shrink-0 border-r border-white/20 bg-white/60 p-5 backdrop-blur dark:border-white/10 dark:bg-slate-950/50 lg:block">
+      <div className="mb-6 rounded-2xl border border-primary/20 bg-gradient-to-br from-primary/10 via-white/40 to-transparent p-4 dark:from-primary/20 dark:via-slate-900/40">
         <p className="text-xs uppercase tracking-wide text-muted-foreground">Progiciel RH Groupe</p>
         <h2 className="text-lg font-semibold">Gestion des congés</h2>
-        <p className="mt-1 text-xs text-muted-foreground">Navigation simplifiée pour usage quotidien</p>
+        <p className="mt-1 text-xs text-muted-foreground">Interface modernisée pour pilotage multi-équipes</p>
       </div>
 
       <div className="space-y-6">
@@ -57,14 +80,30 @@ export function AppSidebar() {
           <section key={section.title}>
             <h3 className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">{section.title}</h3>
             <ul className="space-y-1.5">
-              {section.links.map((link) => (
-                <li key={link.href}>
-                  <Link href={link.href} className="block rounded-md px-3 py-2 transition hover:bg-muted">
-                    <p className="text-sm font-medium text-foreground">{link.label}</p>
-                    {link.helper ? <p className="text-xs text-muted-foreground">{link.helper}</p> : null}
-                  </Link>
-                </li>
-              ))}
+              {section.links.map((link) => {
+                const isActive = pathname === link.href || pathname.startsWith(`${link.href}/`);
+                const Icon = iconByPath[link.href] ?? LayoutDashboard;
+
+                return (
+                  <li key={link.href}>
+                    <Link
+                      href={link.href}
+                      className={cn(
+                        "group block rounded-xl border px-3 py-2 transition",
+                        isActive
+                          ? "border-primary/30 bg-primary/10 shadow-sm"
+                          : "border-transparent hover:border-border/70 hover:bg-muted/70"
+                      )}
+                    >
+                      <p className="flex items-center gap-2 text-sm font-medium text-foreground">
+                        <Icon className={cn("h-4 w-4", isActive ? "text-primary" : "text-muted-foreground group-hover:text-foreground")} />
+                        {link.label}
+                      </p>
+                      {link.helper ? <p className="ml-6 text-xs text-muted-foreground">{link.helper}</p> : null}
+                    </Link>
+                  </li>
+                );
+              })}
             </ul>
           </section>
         ))}
