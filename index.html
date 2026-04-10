@@ -15,8 +15,11 @@
         <p id="env-label" class="muted">Env: non chargé</p>
         <nav>
           <button class="nav-btn active" data-view="dashboard">Dashboard</button>
-          <button class="nav-btn" data-view="demande">Nouvelle demande</button>
-          <button class="nav-btn" data-view="validation">Validation services</button>
+          <button class="nav-btn" data-view="demande">Demande / brouillons</button>
+          <button class="nav-btn" data-view="suivi">Suivi</button>
+          <button class="nav-btn" data-view="validation">Chef / RH validation</button>
+          <button class="nav-btn" data-view="calendar">Calendrier</button>
+          <button class="nav-btn" data-view="gestion">Direction</button>
         </nav>
       </aside>
 
@@ -28,9 +31,11 @@
           </div>
         </header>
 
+        <section id="global-banner" class="card warning hidden"></section>
+
         <section id="auth-card" class="card">
           <h3>Connexion</h3>
-          <p class="muted">La configuration Supabase vient des variables d'environnement Vercel.</p>
+          <p class="muted">Connexion Supabase via variables Vercel.</p>
           <form id="login-form">
             <div class="grid-2">
               <label>Email<input name="email" type="email" required /></label>
@@ -42,7 +47,10 @@
 
         <section id="dashboard-view" class="card hidden"></section>
         <section id="demande-view" class="card hidden"></section>
+        <section id="suivi-view" class="card hidden"></section>
         <section id="validation-view" class="card hidden"></section>
+        <section id="calendar-view" class="card hidden"></section>
+        <section id="gestion-view" class="card hidden"></section>
       </main>
     </div>
 

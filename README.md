@@ -1,35 +1,34 @@
 # Portail Congés (HTML + Supabase + Vercel)
 
-Application moderne en **HTML/CSS/JS** connectée à **Supabase**.
+Interface moderne avec vues distinctes **Salarié**, **Chef de service**, **Direction/RH**.
 
-## Variables d'environnement Vercel
-
-Configurer dans Vercel (Project → Environment Variables):
+## Variables Vercel
 
 - `APP_BASE_URL`
 - `NEXT_PUBLIC_SUPABASE_URL`
 - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
-- `SUPABASE_SERVICE_ROLE_KEY` (stockée côté plateforme, **jamais exposée au client**)
+- `SUPABASE_SERVICE_ROLE_KEY` (non exposée au client)
 
-Le build génère automatiquement `env.js` à partir des variables `APP_BASE_URL`, `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`.
+Le script `scripts/generate-env.mjs` génère `env.js` à partir des variables publiques.
 
-## Fonctionnalités
+## Fonctionnalités principales
 
-- Auth Supabase (email/mot de passe)
-- Dashboard : solde restant + demandes
-- Dépôt de demande avec calcul automatique des jours ouvrés
-- Vérification solde insuffisant
-- Vérification chevauchement de dates
-- Validation multi-services : chef_service puis direction
-- Historisation des validations/refus (`historiques`)
+- Salarié: demande, brouillons, suivi avec barre de progression, demande d'annulation
+- Chef de service: validation individuelle + pré-validation en lot
+- Direction/RH: validation finale, message global, ajustement soldes, paramètres calendrier
+- Calendrier par rôle avec jours rouges + jours fériés
+- Motifs: congés payés, sans solde, autre (texte)
+- Durée: journée entière / demi-journée
+- Contrôles: chevauchement, solde insuffisant
+- Notes privées Chef↔Direction non visibles au collaborateur
 
-## Schéma SQL Supabase
+## SQL Supabase
 
-Migration à appliquer:
+Appliquer la migration:
 
 - `supabase/migrations/20260410180000_full_leave_management.sql`
 
-## Lancement local
+## Lancer
 
 ```bash
 APP_BASE_URL=http://localhost:3000 \
@@ -38,10 +37,10 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=xxx \
 npm run dev
 ```
 
-## Build + déploiement Vercel
+## Build
 
 ```bash
 npm run build
 ```
 
-Le dossier `dist/` est publié (cf. `vercel.json`).
+Sortie: `dist/` (déploiement Vercel statique).
