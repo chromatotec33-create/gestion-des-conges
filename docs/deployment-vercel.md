@@ -43,3 +43,15 @@ Le workflow `.github/workflows/ci.yml` est séparé en:
 - [ ] Monitoring activé (logs applicatifs + erreurs)
 - [ ] Backup/restauration Supabase testés
 - [ ] DNS + HTTPS validés
+
+## 5) Dépannage Vercel — erreur "No Output Directory named 'public'"
+
+Si Vercel est configuré avec un Output Directory forcé à `public`, le build Next.js échoue.
+
+Correctif appliqué dans ce repo:
+
+- `vercel.json` définit explicitement:
+  - `"framework": "nextjs"`
+  - `"outputDirectory": ".next"`
+
+Vérifier également dans **Project Settings -> Build & Output Settings** que l'Output Directory n'est pas forcé à `public`.

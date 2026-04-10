@@ -78,6 +78,10 @@ Le pipeline GitHub Actions est défini dans `.github/workflows/ci.yml`:
 - **Jobs bloquants**: `build` + `quality checks` (lint, typecheck, unit tests, e2e).
 - Utiliser `npm run verify:go-live` en local pour reproduire la chaîne qualité complète avant publication.
 
+Déploiement Vercel:
+
+- `vercel.json` force le mode Next.js et l'output `.next` pour éviter une configuration erronée sur `public`.
+
 ## Documentation de phase
 
 - Phase 1: `docs/phase-1-architecture.md`
