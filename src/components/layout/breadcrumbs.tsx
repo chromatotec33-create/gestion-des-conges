@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { ChevronRight } from "lucide-react";
 
 const labelMap: Record<string, string> = {
   dashboard: "Mon accueil",
@@ -26,18 +27,18 @@ export function Breadcrumbs() {
 
   return (
     <nav aria-label="Fil d'ariane" className="text-xs text-muted-foreground">
-      <ol className="flex flex-wrap items-center gap-2">
+      <ol className="flex flex-wrap items-center gap-1.5">
         <li>
-          <Link href="/dashboard" className="hover:text-foreground">
+          <Link href="/dashboard" className="rounded-md px-1.5 py-1 hover:bg-muted hover:text-foreground">
             Accueil
           </Link>
         </li>
         {segments.map((segment, index) => {
           const key = `${segment}-${index}`;
           return (
-            <li key={key} className="flex items-center gap-2">
-              <span>/</span>
-              <span className="hover:text-foreground">{labelMap[segment] ?? segment}</span>
+            <li key={key} className="flex items-center gap-1.5">
+              <ChevronRight className="h-3.5 w-3.5" />
+              <span className="rounded-md px-1.5 py-1 hover:bg-muted hover:text-foreground">{labelMap[segment] ?? segment}</span>
             </li>
           );
         })}
