@@ -4,20 +4,20 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 const labelMap: Record<string, string> = {
-  dashboard: "Dashboard",
-  calendar: "Calendrier",
-  requests: "Mes demandes",
+  dashboard: "Mon accueil",
+  calendar: "Planning",
+  requests: "Mes congés",
   approvals: "Validation manager",
-  employees: "Employés",
+  employees: "Fiches salariés",
   teams: "Équipes",
   settings: "Paramètres",
   company: "Société",
-  policies: "Politiques",
-  audit: "Audit logs",
+  policies: "Congés",
+  audit: "Journal des actions",
   notifications: "Notifications",
-  profile: "Profil",
-  admin: "Admin",
-  users: "Utilisateurs"
+  profile: "Mon profil",
+  admin: "Administration",
+  users: "Rôles et accès"
 };
 
 export function Breadcrumbs() {
@@ -26,16 +26,16 @@ export function Breadcrumbs() {
 
   return (
     <nav aria-label="Fil d'ariane" className="text-xs text-muted-foreground">
-      <ol className="flex items-center gap-2">
+      <ol className="flex flex-wrap items-center gap-2">
         <li>
           <Link href="/dashboard" className="hover:text-foreground">
             Accueil
           </Link>
         </li>
         {segments.map((segment, index) => {
-          const href = `/${segments.slice(0, index + 1).join("/")}`;
+          const key = `${segment}-${index}`;
           return (
-            <li key={href} className="flex items-center gap-2">
+            <li key={key} className="flex items-center gap-2">
               <span>/</span>
               <span className="hover:text-foreground">{labelMap[segment] ?? segment}</span>
             </li>
