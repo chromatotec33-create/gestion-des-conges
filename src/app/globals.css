@@ -3,16 +3,16 @@
 @tailwind utilities;
 
 :root {
-  --background: 222 33% 98%;
-  --foreground: 225 22% 14%;
-  --muted: 218 22% 94%;
-  --muted-foreground: 217 10% 46%;
+  --background: 220 33% 98%;
+  --foreground: 225 32% 12%;
+  --muted: 220 24% 95%;
+  --muted-foreground: 220 14% 43%;
   --card: 0 0% 100%;
-  --card-foreground: 225 22% 14%;
-  --border: 217 24% 88%;
-  --primary: 223 84% 56%;
+  --card-foreground: 225 32% 14%;
+  --border: 220 20% 88%;
+  --primary: 226 92% 60%;
   --primary-foreground: 210 40% 98%;
-  --radius: 0.85rem;
+  --radius: 1rem;
 
   --chromatotec: 217 91% 60%;
   --airmotec: 174 84% 34%;
@@ -20,15 +20,15 @@
 }
 
 .dark {
-  --background: 226 38% 8%;
-  --foreground: 210 20% 96%;
-  --muted: 225 29% 14%;
-  --muted-foreground: 215 12% 66%;
-  --card: 226 35% 11%;
-  --card-foreground: 210 20% 96%;
-  --border: 225 22% 20%;
-  --primary: 222 89% 67%;
-  --primary-foreground: 222 47% 11%;
+  --background: 228 35% 8%;
+  --foreground: 210 33% 96%;
+  --muted: 226 27% 14%;
+  --muted-foreground: 218 14% 67%;
+  --card: 228 32% 10%;
+  --card-foreground: 210 33% 96%;
+  --border: 225 20% 23%;
+  --primary: 223 100% 72%;
+  --primary-foreground: 223 45% 10%;
 }
 
 * {
@@ -37,18 +37,44 @@
 
 body {
   @apply bg-background text-foreground antialiased;
+  background-image: radial-gradient(circle at 10% 10%, hsl(var(--primary) / 0.08), transparent 30%),
+    radial-gradient(circle at 90% 0%, hsl(174 84% 34% / 0.07), transparent 35%);
 }
 
 @layer components {
   .page-title {
-    @apply text-2xl font-semibold tracking-tight;
+    @apply text-2xl font-semibold tracking-tight md:text-3xl;
   }
 
   .page-subtitle {
-    @apply mt-1 text-sm text-muted-foreground;
+    @apply mt-1 text-sm text-muted-foreground md:text-base;
   }
 
   .enterprise-panel {
-    @apply rounded-2xl border bg-card p-5 shadow-sm;
+    @apply rounded-2xl border border-white/20 bg-card/90 p-5 shadow-sm backdrop-blur dark:border-white/10;
+  }
+
+  .glass-panel {
+    @apply rounded-2xl border border-white/20 bg-white/70 shadow-sm backdrop-blur dark:border-white/10 dark:bg-slate-900/60;
+  }
+
+  .data-table {
+    @apply w-full text-sm;
+  }
+
+  .data-table thead {
+    @apply text-left text-muted-foreground;
+  }
+
+  .data-table th {
+    @apply px-2 py-2 font-medium;
+  }
+
+  .data-table td {
+    @apply px-2 py-3;
+  }
+
+  .data-table tbody tr {
+    @apply border-t transition-colors hover:bg-muted/40;
   }
 }
