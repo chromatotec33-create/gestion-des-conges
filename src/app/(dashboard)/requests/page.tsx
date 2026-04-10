@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardTitle } from "@/components/ui/card";
 
@@ -14,7 +15,9 @@ export default function RequestsPage() {
           <h2 className="page-title">Mes demandes</h2>
           <p className="page-subtitle">Historique et suivi de vos demandes de congé.</p>
         </div>
-        <Button>Nouvelle demande</Button>
+        <Link href="/requests/new">
+          <Button>Nouvelle demande</Button>
+        </Link>
       </div>
       <Card>
         <CardTitle>Demandes récentes</CardTitle>
