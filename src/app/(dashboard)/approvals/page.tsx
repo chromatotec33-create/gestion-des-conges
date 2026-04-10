@@ -1,5 +1,6 @@
 import { Card, CardTitle } from "@/components/ui/card";
 import { createServiceRoleClient } from "@/infrastructure/supabase/server-client";
+import { revalidatePath } from "next/cache";
 
 type ApprovalSearchParams = {
   companyId?: string | string[];
@@ -75,6 +76,31 @@ export default async function ApprovalsPage({ searchParams = {} }: { searchParam
     }
   }
 
+  async function decideLeaveRequest(formData: FormData) {
+    "use server";
+
+    const requestId = formData.get("requestId");
+    const companyIdFromForm = formData.get("companyId");
+    const decision = formData.get("decision");
+
+    if (
+      typeof requestId !== "string" ||
+      typeof companyIdFromForm !== "string" ||
+      (decision !== "approved" && decision !== "rejected")
+    ) {
+      return;
+    }
+
+    const supabase = createServiceRoleClient();
+    await supabase
+      .from("leave_requests")
+      .update({ status: decision, updated_at: new Date().toISOString() })
+      .eq("company_id", companyIdFromForm)
+      .eq("id", requestId);
+
+    revalidatePath("/approvals");
+  }
+
   return (
     <section className="space-y-6">
       <div>
@@ -105,6 +131,26 @@ export default async function ApprovalsPage({ searchParams = {} }: { searchParam
                 {approval.leave_type_id} — {periodFromDays(approval.leave_request_days ?? [])}
               </p>
               <p className="text-xs text-muted-foreground">Statut: {approval.status}</p>
+              {companyId ? (
+                <div className="mt-3 flex gap-2">
+                  <form action={decideLeaveRequest}>
+                    <input type="hidden" name="requestId" value={approval.id} />
+                    <input type="hidden" name="companyId" value={companyId} />
+                    <input type="hidden" name="decision" value="approved" />
+                    <button type="submit" className="rounded-md border px-3 py-1.5 text-xs font-medium">
+                      Approuver
+                    </button>
+                  </form>
+                  <form action={decideLeaveRequest}>
+                    <input type="hidden" name="requestId" value={approval.id} />
+                    <input type="hidden" name="companyId" value={companyId} />
+                    <input type="hidden" name="decision" value="rejected" />
+                    <button type="submit" className="rounded-md border px-3 py-1.5 text-xs font-medium">
+                      Refuser
+                    </button>
+                  </form>
+                </div>
+              ) : null}
             </div>
           </Card>
         ))}

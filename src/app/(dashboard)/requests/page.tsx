@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { revalidatePath } from "next/cache";
 import { Button } from "@/components/ui/button";
 import { Card, CardTitle } from "@/components/ui/card";
 import { createServiceRoleClient } from "@/infrastructure/supabase/server-client";
@@ -71,6 +72,27 @@ export default async function RequestsPage({ searchParams = {} }: { searchParams
     }
   }
 
+  async function cancelRequest(formData: FormData) {
+    "use server";
+
+    const requestId = formData.get("requestId");
+    const companyIdFromForm = formData.get("companyId");
+
+    if (typeof requestId !== "string" || typeof companyIdFromForm !== "string") {
+      return;
+    }
+
+    const supabase = createServiceRoleClient();
+    await supabase
+      .from("leave_requests")
+      .update({ status: "cancelled", updated_at: new Date().toISOString() })
+      .eq("company_id", companyIdFromForm)
+      .eq("id", requestId);
+
+    revalidatePath("/requests");
+    revalidatePath("/approvals");
+  }
+
   return (
     <section className="space-y-6">
       <div className="flex items-center justify-between">
@@ -115,7 +137,20 @@ export default async function RequestsPage({ searchParams = {} }: { searchParams
                   <td className="py-3">{request.id}</td>
                   <td>{request.leave_type_id}</td>
                   <td>{formatPeriod(request.leave_request_days ?? [])}</td>
-                  <td>{request.status}</td>
+                  <td>
+                    <div className="flex items-center gap-2">
+                      <span>{request.status}</span>
+                      {companyId && request.status !== "cancelled" ? (
+                        <form action={cancelRequest}>
+                          <input type="hidden" name="requestId" value={request.id} />
+                          <input type="hidden" name="companyId" value={companyId} />
+                          <button type="submit" className="rounded-md border px-2 py-1 text-xs">
+                            Annuler
+                          </button>
+                        </form>
+                      ) : null}
+                    </div>
+                  </td>
                 </tr>
               ))}
               {companyId && employeeId && requests.length === 0 ? (
