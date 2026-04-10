@@ -1,10 +1,8 @@
 import { Card, CardTitle } from "@/components/ui/card";
 import { createServiceRoleClient } from "@/infrastructure/supabase/server-client";
+import { resolveDefaultCompanyId } from "@/lib/default-company";
 
-type NotificationsSearchParams = {
-  companyId?: string;
-  userId?: string;
-};
+type NotificationsSearchParams = { userId?: string };
 
 type NotificationRow = {
   id: string;
@@ -12,13 +10,13 @@ type NotificationRow = {
   channel: "email" | "in_app";
   status: "queued" | "sent" | "failed" | "read";
   created_at: string;
-  users: {
-    email: string;
-  } | null;
+  users: { email: string } | null;
 };
 
-async function fetchNotifications(companyId: string, userId?: string): Promise<NotificationRow[]> {
+async function fetchNotifications(userId?: string): Promise<NotificationRow[]> {
   const supabase = createServiceRoleClient();
+  const companyId = await resolveDefaultCompanyId();
+
   let query = supabase
     .from("notifications")
     .select("id, template_key, channel, status, created_at, users(email)")
@@ -26,9 +24,7 @@ async function fetchNotifications(companyId: string, userId?: string): Promise<N
     .order("created_at", { ascending: false })
     .limit(50);
 
-  if (userId) {
-    query = query.eq("user_id", userId);
-  }
+  if (userId) query = query.eq("user_id", userId);
 
   const { data, error } = await query.returns<NotificationRow[]>();
   if (error) throw new Error(error.message);
@@ -36,34 +32,21 @@ async function fetchNotifications(companyId: string, userId?: string): Promise<N
 }
 
 export default async function NotificationsPage({ searchParams }: { searchParams: NotificationsSearchParams }) {
-  const companyId = searchParams.companyId;
-  const userId = searchParams.userId;
-
   let notifications: NotificationRow[] = [];
   let errorMessage: string | null = null;
 
-  if (companyId) {
-    try {
-      notifications = await fetchNotifications(companyId, userId);
-    } catch (error) {
-      errorMessage = error instanceof Error ? error.message : "Erreur de chargement";
-    }
+  try {
+    notifications = await fetchNotifications(searchParams.userId);
+  } catch (error) {
+    errorMessage = error instanceof Error ? error.message : "Erreur de chargement";
   }
 
   return (
     <section className="space-y-6">
       <div>
         <h2 className="page-title">Notifications</h2>
-        <p className="page-subtitle">Paramètres et historique des notifications transactionnelles.</p>
+        <p className="page-subtitle">Historique des notifications transactionnelles.</p>
       </div>
-
-      {!companyId ? (
-        <Card>
-          <p className="text-sm text-muted-foreground">
-            Renseignez <code>companyId</code> dans l’URL pour charger les notifications réelles.
-          </p>
-        </Card>
-      ) : null}
 
       {errorMessage ? (
         <Card>
@@ -83,10 +66,8 @@ export default async function NotificationsPage({ searchParams }: { searchParams
             </li>
           ))}
 
-          {companyId && notifications.length === 0 ? (
-            <li className="rounded-md border bg-muted/20 px-3 py-2 text-sm text-muted-foreground">
-              Aucune notification trouvée.
-            </li>
+          {notifications.length === 0 ? (
+            <li className="rounded-md border bg-muted/20 px-3 py-2 text-sm text-muted-foreground">Aucune notification trouvée.</li>
           ) : null}
         </ul>
       </Card>

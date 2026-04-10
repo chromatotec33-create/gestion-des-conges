@@ -72,7 +72,7 @@ export function AppSidebar() {
       <div className="mb-6 rounded-2xl border border-primary/20 bg-gradient-to-br from-primary/10 via-white/40 to-transparent p-4 dark:from-primary/20 dark:via-slate-900/40">
         <p className="text-xs uppercase tracking-wide text-muted-foreground">Progiciel RH Groupe</p>
         <h2 className="text-lg font-semibold">Gestion des congés</h2>
-        <p className="mt-1 text-xs text-muted-foreground">Interface modernisée pour pilotage multi-équipes</p>
+        <p className="mt-1 text-xs text-muted-foreground">Interface modernisée pour pilotage équipes</p>
       </div>
 
       <div className="space-y-6">

@@ -14,7 +14,7 @@ export default function HomePage() {
           </p>
           <h1 className="text-4xl font-semibold tracking-tight md:text-5xl">Gestion des congés moderne, fiable et prête pour la production.</h1>
           <p className="max-w-2xl text-muted-foreground md:text-lg">
-            Centralisez les demandes d’absence, les validations manager/RH, la conformité et l’audit multi-sociétés dans une interface claire et avancée.
+            Centralisez les demandes d’absence, les validations manager/RH, la conformité et l’audit organisation dans une interface claire et avancée.
           </p>
           <div className="flex flex-wrap items-center gap-3">
             <Link href="/login">
