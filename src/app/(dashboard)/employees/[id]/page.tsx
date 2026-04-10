@@ -11,10 +11,14 @@ type EmployeeDetails = {
   contract_type: string | null;
   fte: number | null;
   is_active: boolean;
+  manager_employee_id: string | null;
   users: { email: string; first_name: string | null; last_name: string | null } | null;
   teams: { name: string } | null;
   companies: { name: string; legal_name: string | null } | null;
-  manager: { users: { first_name: string | null; last_name: string | null; email: string } | null } | null;
+};
+
+type ManagerRow = {
+  users: { first_name: string | null; last_name: string | null; email: string } | null;
 };
 
 type BalanceRow = {
@@ -46,7 +50,7 @@ function fullName(user: EmployeeDetails["users"]): string {
   return value || user.email;
 }
 
-function managerName(manager: EmployeeDetails["manager"]): string {
+function managerName(manager: ManagerRow | null): string {
   const user = manager?.users;
   if (!user) return "-";
   return `${user.first_name ?? ""} ${user.last_name ?? ""}`.trim() || user.email;
@@ -68,9 +72,7 @@ async function getEmployeeSnapshot(employeeId: string) {
     await Promise.all([
       supabase
         .from("employees")
-        .select(
-          "id, employee_number, hired_at, contract_type, fte, is_active, users(email, first_name, last_name), teams(name), companies(name, legal_name), manager:manager_employee_id(users(first_name, last_name, email))"
-        )
+        .select("id, employee_number, hired_at, contract_type, fte, is_active, manager_employee_id, users(email, first_name, last_name), teams(name), companies(name, legal_name)")
         .eq("company_id", companyId)
         .eq("id", employeeId)
         .maybeSingle<EmployeeDetails>(),
@@ -86,7 +88,7 @@ async function getEmployeeSnapshot(employeeId: string) {
         .eq("company_id", companyId)
         .eq("employee_id", employeeId)
         .order("created_at", { ascending: false })
-        .limit(20)
+        .limit(50)
         .returns<RequestRow[]>(),
       supabase
         .from("audit_logs")
@@ -94,7 +96,7 @@ async function getEmployeeSnapshot(employeeId: string) {
         .eq("company_id", companyId)
         .eq("actor_employee_id", employeeId)
         .order("occurred_at", { ascending: false })
-        .limit(20)
+        .limit(50)
         .returns<AuditRow[]>()
     ]);
 
@@ -102,19 +104,40 @@ async function getEmployeeSnapshot(employeeId: string) {
     throw new Error(employeeError?.message ?? balancesError?.message ?? requestsError?.message ?? auditsError?.message ?? "Erreur de chargement");
   }
 
+  let manager: ManagerRow | null = null;
+  if (employee?.manager_employee_id) {
+    const { data } = await supabase
+      .from("employees")
+      .select("users(first_name, last_name, email)")
+      .eq("company_id", companyId)
+      .eq("id", employee.manager_employee_id)
+      .maybeSingle<ManagerRow>();
+    manager = data ?? null;
+  }
+
   return {
     employee,
+    manager,
     balances: balances ?? [],
     requests: requests ?? [],
     audits: audits ?? []
   };
 }
 
-export default async function EmployeeDetailPage({ params }: { params: { id: string } }) {
+export default async function EmployeeDetailPage({ params, searchParams }: { params: { id: string }; searchParams: { year?: string; status?: string } }) {
   const snapshot = await getEmployeeSnapshot(params.id);
   if (!snapshot.employee) notFound();
 
   const employee = snapshot.employee;
+  const yearFilter = searchParams.year;
+  const statusFilter = searchParams.status;
+
+  const filteredRequests = snapshot.requests.filter((request) => {
+    const matchesStatus = statusFilter ? request.status === statusFilter : true;
+    const matchesYear = yearFilter ? request.created_at.startsWith(yearFilter) : true;
+    return matchesStatus && matchesYear;
+  });
+
   const totalAcquired = snapshot.balances.reduce((acc, item) => acc + Number(item.acquired_days ?? 0), 0);
   const totalUsed = snapshot.balances.reduce((acc, item) => acc + Number(item.consumed_days ?? 0), 0);
   const totalRemaining = snapshot.balances.reduce((acc, item) => acc + Number(item.current_balance_days ?? 0), 0);
@@ -140,7 +163,7 @@ export default async function EmployeeDetailPage({ params }: { params: { id: str
           <p>Date d’arrivée: {employee.hired_at}</p>
           <p>Type de contrat: {employee.contract_type ?? "Non renseigné"}</p>
           <p>Temps de travail: {employee.fte ? `${Math.round(employee.fte * 100)}%` : "100%"}</p>
-          <p>Manager: {managerName(employee.manager)}</p>
+          <p>Manager: {managerName(snapshot.manager)}</p>
           <p>ID RH interne: {employee.employee_number}</p>
           <p>Entité juridique: {employee.companies?.legal_name ?? employee.companies?.name ?? "Chromatotec"}</p>
         </div>
@@ -166,6 +189,9 @@ export default async function EmployeeDetailPage({ params }: { params: { id: str
 
       <details open className="glass-panel p-5">
         <summary className="cursor-pointer text-sm font-semibold">Demandes de congés</summary>
+        <p className="mt-2 text-xs text-muted-foreground">
+          Filtres disponibles via URL: <code>?year=2026</code> et/ou <code>&status=pending</code>
+        </p>
         <div className="mt-4 overflow-x-auto">
           <table className="data-table">
             <thead>
@@ -177,7 +203,7 @@ export default async function EmployeeDetailPage({ params }: { params: { id: str
               </tr>
             </thead>
             <tbody>
-              {snapshot.requests.map((request) => (
+              {filteredRequests.map((request) => (
                 <tr key={request.id}>
                   <td>{request.leave_type_id}</td>
                   <td>{formatPeriod(request.leave_request_days ?? [])}</td>
@@ -185,6 +211,13 @@ export default async function EmployeeDetailPage({ params }: { params: { id: str
                   <td>{request.created_at}</td>
                 </tr>
               ))}
+              {filteredRequests.length === 0 ? (
+                <tr>
+                  <td colSpan={4} className="text-sm text-muted-foreground">
+                    Aucune demande pour ces filtres.
+                  </td>
+                </tr>
+              ) : null}
             </tbody>
           </table>
         </div>
@@ -198,6 +231,7 @@ export default async function EmployeeDetailPage({ params }: { params: { id: str
               <span className="font-medium">{audit.occurred_at}</span> — {audit.action} ({audit.entity_name}) {audit.reason ? `· ${audit.reason}` : ""}
             </li>
           ))}
+          {snapshot.audits.length === 0 ? <li className="rounded-xl border bg-muted/20 px-3 py-2 text-muted-foreground">Aucun audit disponible.</li> : null}
         </ul>
       </details>
 
