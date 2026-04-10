@@ -1,55 +1,54 @@
-"use client";
+import { Card } from "@/components/ui/card";
+import { NewRequestForm } from "@/features/leave/components/new-request-form";
+import { createServiceRoleClient } from "@/infrastructure/supabase/server-client";
+import { resolveDefaultCompanyId } from "@/lib/default-company";
 
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Card, CardTitle } from "@/components/ui/card";
+type LeaveTypeOption = {
+  id: string;
+  code: string;
+  label: string;
+};
 
-const steps = ["Type d'absence", "Dates", "Impact sur le solde", "Validation", "Confirmation"] as const;
+async function fetchLeaveTypes(): Promise<LeaveTypeOption[]> {
+  const supabase = createServiceRoleClient();
+  const companyId = await resolveDefaultCompanyId();
 
-export default function NewRequestPage() {
-  const [step, setStep] = useState(0);
+  const { data, error } = await supabase
+    .from("leave_types")
+    .select("id, code, label")
+    .eq("company_id", companyId)
+    .eq("is_active", true)
+    .order("code", { ascending: true })
+    .returns<LeaveTypeOption[]>();
+
+  if (error) throw new Error(error.message);
+  return data ?? [];
+}
+
+export default async function NewRequestPage() {
+  let leaveTypes: LeaveTypeOption[] = [];
+  let errorMessage: string | null = null;
+
+  try {
+    leaveTypes = await fetchLeaveTypes();
+  } catch (error) {
+    errorMessage = error instanceof Error ? error.message : "Erreur de chargement";
+  }
 
   return (
     <section className="space-y-6">
       <div>
-        <h2 className="page-title">Assistant : je veux poser un congé</h2>
-        <p className="page-subtitle">Parcours guidé étape par étape pour éviter les erreurs.</p>
+        <h2 className="page-title">Poser un congé</h2>
+        <p className="page-subtitle">Formulaire opérationnel connecté à Supabase.</p>
       </div>
 
-      <Card>
-        <CardTitle>Étape {step + 1} — {steps[step]}</CardTitle>
-        <div className="mt-4 space-y-3 text-sm">
-          {step === 0 ? (
-            <select className="w-full rounded-md border bg-card px-3 py-2">
-              <option>Congés payés N</option>
-              <option>RTT</option>
-              <option>Congé exceptionnel</option>
-            </select>
-          ) : null}
-
-          {step === 1 ? (
-            <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
-              <input type="date" className="rounded-md border bg-card px-3 py-2" />
-              <input type="date" className="rounded-md border bg-card px-3 py-2" />
-            </div>
-          ) : null}
-
-          {step === 2 ? <p>Impact estimé : -2 jours. Solde restant après demande : 8 jours.</p> : null}
-          {step === 3 ? <p>Validation prévue : Manager équipe → RH.</p> : null}
-          {step === 4 ? <p>Vérifiez les informations puis confirmez l’envoi de votre demande.</p> : null}
-        </div>
-
-        <div className="mt-5 flex justify-between">
-          <Button variant="outline" onClick={() => setStep((prev) => Math.max(0, prev - 1))}>
-            Précédent
-          </Button>
-          {step < steps.length - 1 ? (
-            <Button onClick={() => setStep((prev) => Math.min(steps.length - 1, prev + 1))}>Suivant</Button>
-          ) : (
-            <Button>Envoyer la demande</Button>
-          )}
-        </div>
-      </Card>
+      {errorMessage ? (
+        <Card>
+          <p className="text-sm text-red-600">Erreur: {errorMessage}</p>
+        </Card>
+      ) : (
+        <NewRequestForm leaveTypes={leaveTypes} />
+      )}
     </section>
   );
 }
