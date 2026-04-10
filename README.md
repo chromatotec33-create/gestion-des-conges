@@ -89,5 +89,6 @@ Le pipeline GitHub Actions est défini dans `.github/workflows/ci.yml`:
 - Phase 7: `docs/phase-7-tests.md`
 - Phase 8: `docs/setup-environment.md`, `docs/deployment-vercel.md`
 - Go-live définitif: `docs/go-live-definitif.md`
+- Go-live client (todo restant): `docs/go-live-todo-client.md`
 - Multi-sociétés propagation: `docs/multi-company-propagation.md`
 - Architecture interne des couches: `src/README.md`
