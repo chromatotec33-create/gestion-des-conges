@@ -1,0 +1,136 @@
+:root {
+  --bg: #f4f7fb;
+  --panel: #fff;
+  --text: #182132;
+  --muted: #5f6b85;
+  --line: #d7deeb;
+  --primary: #1d4ed8;
+  --danger: #b42318;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: Inter, system-ui, -apple-system, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+}
+
+.topbar {
+  position: sticky;
+  top: 0;
+  background: #fff;
+  border-bottom: 1px solid var(--line);
+  padding: .8rem 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: .8rem;
+}
+
+.nav, .nav-right {
+  display: flex;
+  align-items: center;
+  gap: .65rem;
+}
+
+.nav a, .nav-right a {
+  text-decoration: none;
+  color: var(--text);
+  padding: .4rem .6rem;
+  border-radius: 6px;
+}
+
+.nav a.active {
+  background: #e8efff;
+  color: var(--primary);
+  font-weight: 600;
+}
+
+.container {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 1rem;
+}
+
+.container.narrow { max-width: 720px; }
+
+.hero {
+  margin-bottom: .8rem;
+}
+
+.hero h1 { margin: 0 0 .2rem; }
+.hero p { margin: 0; color: var(--muted); }
+
+.grid-cards {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: .8rem;
+}
+
+.panel {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 1rem;
+}
+
+.button-link, button {
+  display: inline-block;
+  border: 0;
+  border-radius: 8px;
+  padding: .55rem .85rem;
+  background: var(--primary);
+  color: #fff;
+  text-decoration: none;
+  font: inherit;
+  cursor: pointer;
+}
+
+button.secondary { background: #334155; }
+button.danger { background: var(--danger); }
+
+.field-row {
+  display: grid;
+  gap: .3rem;
+  margin-bottom: .8rem;
+}
+
+.field-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: .7rem;
+}
+
+input, select, textarea {
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: .55rem .65rem;
+  font: inherit;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: .8rem;
+}
+
+.hint { color: var(--muted); }
+
+.table-wrap { overflow-x: auto; }
+
+th, td {
+  border-bottom: 1px solid var(--line);
+  text-align: left;
+  padding: .5rem .35rem;
+}
+
+table { width: 100%; border-collapse: collapse; }
+
+@media (max-width: 850px) {
+  .grid-cards { grid-template-columns: 1fr; }
+  .field-grid { grid-template-columns: 1fr; }
+  .topbar { flex-direction: column; align-items: flex-start; }
+}
